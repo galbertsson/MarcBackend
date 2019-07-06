@@ -1,9 +1,11 @@
 package com.example.controller;
 
 import com.example.DeckNotFoundException;
+import com.example.model.BasicNote;
+import com.example.model.ClozeNote;
 import com.example.model.Deck;
+import com.example.model.Note;
 import com.example.repository.DeckRepository;
-import com.example.util.Firebase;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,17 @@ public class DeckController {
         this.repository = repository;
     }
 
+    @PostMapping("/note")
+    String foo(@RequestBody Note note){
+        if(note instanceof BasicNote){
+            return "BasicNote";
+        }else if(note instanceof ClozeNote){
+            return "ClozeNote";
+        }
+
+        return "Unknown type!";
+    }
+
     @GetMapping("/decks")
     List<Deck> all(){
         return repository.findAll();
@@ -23,6 +36,8 @@ public class DeckController {
 
     @PostMapping("/decks")
     Deck newDeck(@RequestBody Deck deck){
+        System.out.println(deck);
+        //return deck;
         return repository.save(deck);
     }
 

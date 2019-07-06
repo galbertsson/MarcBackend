@@ -1,5 +1,11 @@
 package com.example.model;
 
+import lombok.Data;
+
+import javax.persistence.Entity;
+
+@Data
+@Entity(name="BasicNote")
 public class BasicNote extends Note {
     String front;
     String back;
@@ -13,6 +19,6 @@ public class BasicNote extends Note {
 
     @Override
     public String toString() {
-        return "Basic Note " + super.toString();
+        return "Basic Note {front:" + front + ", back:" + back + "}";
     }
 }
