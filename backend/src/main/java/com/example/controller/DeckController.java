@@ -18,7 +18,7 @@ public class DeckController {
         this.repository = repository;
     }
 
-    @PostMapping("/note")
+    /*@PostMapping("/note")
     String foo(@RequestBody Note note){
         if(note instanceof BasicNote){
             return "BasicNote";
@@ -27,7 +27,7 @@ public class DeckController {
         }
 
         return "Unknown type!";
-    }
+    }*/
 
     @GetMapping("/decks")
     List<Deck> all(){
@@ -37,8 +37,8 @@ public class DeckController {
     @PostMapping("/decks")
     Deck newDeck(@RequestBody Deck deck){
         System.out.println(deck);
-        //return deck;
-        return repository.save(deck);
+        return deck;
+        //return repository.save(deck);
     }
 
     @GetMapping("/decks/{id}")
