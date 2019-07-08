@@ -1,13 +1,23 @@
 package com.example.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-@Data
-@Entity(name="BasicNote")
-public class BasicNote extends Note {
+@Embeddable
+public class BasicNote{
+
+    @Getter
+    @Setter
     String front;
+
+    @Getter
+    @Setter
     String back;
 
     BasicNote(){}

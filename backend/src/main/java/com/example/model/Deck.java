@@ -1,11 +1,8 @@
 package com.example.model;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.SafeHtml;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +18,9 @@ public class Deck {
 
     /*TODO: The serialization/deserialization problems likely comes from here, hibernate does not support arrays by default it seems like
     Can this we switched to list or collection?*/
-    private Note[] notes;
+
+    @ElementCollection
+    private List<BasicNote> notes;
 
     Deck(){}
 

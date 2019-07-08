@@ -2,12 +2,16 @@ package com.example.model;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
-@Data
-@Entity(name="ClozeNote")
-public class ClozeNote extends Note{
+@Embeddable
+public class ClozeNote{
+    @Getter
+    @Setter
     String text;
 
     ClozeNote(){}
