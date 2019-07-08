@@ -8,8 +8,8 @@ import lombok.Setter;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 
-@Embeddable
-public class ClozeNote{
+@Entity
+public class ClozeNote extends Note{
     @Getter
     @Setter
     String text;

@@ -9,8 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Embeddable
-public class BasicNote{
+@Entity
+public class BasicNote extends Note{
 
     @Getter
     @Setter

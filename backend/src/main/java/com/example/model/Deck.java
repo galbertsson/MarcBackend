@@ -19,8 +19,8 @@ public class Deck {
     /*TODO: The serialization/deserialization problems likely comes from here, hibernate does not support arrays by default it seems like
     Can this we switched to list or collection?*/
 
-    @ElementCollection
-    private List<BasicNote> notes;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Note> notes;
 
     Deck(){}
 

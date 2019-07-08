@@ -14,8 +14,10 @@ import javax.persistence.*;
         @JsonSubTypes.Type(value = ClozeNote.class, name = "ClozeNote"),
         @JsonSubTypes.Type(value = BasicNote.class, name = "BasicNote")
 })
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Note {
-    @Getter
-    @Setter
-    String foo;
+    @javax.persistence.Id
+    @GeneratedValue
+    long Id;
 }

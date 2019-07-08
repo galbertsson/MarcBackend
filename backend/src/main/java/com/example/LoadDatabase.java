@@ -21,7 +21,7 @@ public class LoadDatabase {
     CommandLineRunner initDatabase(DeckRepository repository){
         Deck d = new Deck("Deck 1");
 
-        List<BasicNote> l = new ArrayList<>();
+        List<Note> l = new ArrayList<>();
         l.add(new BasicNote("FrontTest", "BackTest"));
         //l.add(new BasicNote("FrontTest1", "BackTest1"));
         //l.add(new ClozeNote("Some kind of text :)"));
