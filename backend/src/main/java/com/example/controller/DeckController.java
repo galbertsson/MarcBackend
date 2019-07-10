@@ -18,27 +18,21 @@ public class DeckController {
         this.repository = repository;
     }
 
-    /*@PostMapping("/note")
-    String foo(@RequestBody Note note){
-        if(note instanceof BasicNote){
-            return "BasicNote";
-        }else if(note instanceof ClozeNote){
-            return "ClozeNote";
-        }
-
-        return "Unknown type!";
-    }*/
-
+    /**
+     * @return A list of all the decks that exists in the database
+     * */
     @GetMapping("/decks")
     List<Deck> all(){
         return repository.findAll();
     }
 
-    @PostMapping("/decks")
+    /**
+     * Saves the given deck to persistent storage
+     * @param deck The Deck that should be saved
+     * */
+    @PostMapping("/decks/create")
     Deck newDeck(@RequestBody Deck deck){
-        System.out.println(deck);
-        return deck;
-        //return repository.save(deck);
+        return repository.save(deck);
     }
 
     @GetMapping("/decks/{id}")
@@ -47,19 +41,6 @@ public class DeckController {
                 .orElseThrow(() ->
                         new DeckNotFoundException(id)
                 );
-    }
-
-    @PutMapping("/decks/{id}")
-    Deck deckById(@RequestBody Deck newDeck, @PathVariable long id){
-        return repository.findById(id)
-                .map(deck -> {
-                    deck.setTitle(newDeck.getTitle());
-                    return repository.save(deck);
-                })
-                .orElseGet(() -> {
-                    newDeck.setId(id);
-                    return repository.save(newDeck);
-                });
     }
 
     @DeleteMapping("/decks/{id}")
