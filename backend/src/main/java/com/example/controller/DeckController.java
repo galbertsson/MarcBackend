@@ -43,6 +43,19 @@ public class DeckController {
                 );
     }
 
+    @PostMapping("/decks/edit")
+    void edit(@RequestBody Deck deck){
+
+        Deck repDeck = repository.findById(deck.getId()).orElseThrow(() ->
+                new DeckNotFoundException(deck.getId())
+        );
+
+        repDeck.setNotes(deck.getNotes());
+        repDeck.setTitle(deck.getTitle());
+
+        repository.save(repDeck);
+    }
+
     @DeleteMapping("/decks/{id}")
     void deleteDeck(@PathVariable Long id){
         repository.deleteById(id);
