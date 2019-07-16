@@ -1,14 +1,12 @@
 package com.example.controller;
 
 import com.example.DeckNotFoundException;
-import com.example.model.BasicNote;
-import com.example.model.ClozeNote;
 import com.example.model.Deck;
-import com.example.model.Note;
 import com.example.repository.DeckRepository;
+import helpers.SimplifiedDeckView;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class DeckController {
@@ -24,6 +22,19 @@ public class DeckController {
     @GetMapping("/decks")
     List<Deck> all(){
         return repository.findAll();
+    }
+
+    /**
+     * @return Returns a list of the id and the title of all the decks
+     * */
+    @GetMapping("/decks/basic")
+    List<SimplifiedDeckView> basic(){
+        List<SimplifiedDeckView> decks = new LinkedList<>();
+        for (Deck deck : repository.findAll()) {
+            decks.add(new SimplifiedDeckView(deck));
+        }
+
+        return decks;
     }
 
     /**
