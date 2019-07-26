@@ -3,10 +3,10 @@ package com.example.controller;
 import com.example.DeckNotFoundException;
 import com.example.model.Deck;
 import com.example.repository.DeckRepository;
-import com.example.util.Firebase;
+import helpers.SimplifiedDeckView;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class DeckController {
@@ -16,12 +16,32 @@ public class DeckController {
         this.repository = repository;
     }
 
+    /**
+     * @return A list of all the decks that exists in the database
+     * */
     @GetMapping("/decks")
     List<Deck> all(){
         return repository.findAll();
     }
 
-    @PostMapping("/decks")
+    /**
+     * @return Returns a list of the id and the title of all the decks
+     * */
+    @GetMapping("/decks/basic")
+    List<SimplifiedDeckView> basic(){
+        List<SimplifiedDeckView> decks = new LinkedList<>();
+        for (Deck deck : repository.findAll()) {
+            decks.add(new SimplifiedDeckView(deck));
+        }
+
+        return decks;
+    }
+
+    /**
+     * Saves the given deck to persistent storage
+     * @param deck The Deck that should be saved
+     * */
+    @PostMapping("/decks/create")
     Deck newDeck(@RequestBody Deck deck){
         return repository.save(deck);
     }
@@ -34,17 +54,17 @@ public class DeckController {
                 );
     }
 
-    @PutMapping("/decks/{id}")
-    Deck deckById(@RequestBody Deck newDeck, @PathVariable long id){
-        return repository.findById(id)
-                .map(deck -> {
-                    deck.setTitle(newDeck.getTitle());
-                    return repository.save(deck);
-                })
-                .orElseGet(() -> {
-                    newDeck.setId(id);
-                    return repository.save(newDeck);
-                });
+    @PostMapping("/decks/edit")
+    void edit(@RequestBody Deck deck){
+
+        Deck repDeck = repository.findById(deck.getId()).orElseThrow(() ->
+                new DeckNotFoundException(deck.getId())
+        );
+
+        repDeck.setNotes(deck.getNotes());
+        repDeck.setTitle(deck.getTitle());
+
+        repository.save(repDeck);
     }
 
     @DeleteMapping("/decks/{id}")
