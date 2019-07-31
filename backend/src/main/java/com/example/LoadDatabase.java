@@ -23,6 +23,7 @@ public class LoadDatabase {
 
         List<Note> l = new ArrayList<>();
         l.add(new BasicNote("FrontTest", "BackTest"));
+        d.setUid("test");
         //l.add(new BasicNote("FrontTest1", "BackTest1"));
         //l.add(new ClozeNote("Some kind of text :)"));
 

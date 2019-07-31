@@ -3,7 +3,6 @@ package com.example.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,6 +14,8 @@ public class Deck {
     private Long id;
 
     private String title;
+
+    private String uid;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Note> notes;
