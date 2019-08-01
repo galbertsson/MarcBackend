@@ -3,19 +3,22 @@ package com.example.controller;
 import com.example.DeckNotFoundException;
 import com.example.model.Deck;
 import com.example.repository.DeckRepository;
+import com.example.util.Firebase;
 import helpers.SimplifiedDeckView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-
-import static com.example.util.Firebase.getUserIdFromAuthHeader;
 
 @RestController
 public class DeckController {
     private final DeckRepository repository;
 
-    DeckController(DeckRepository repository){
+    private final Firebase firebase;
+
+    DeckController(DeckRepository repository, Firebase firebase){
         this.repository = repository;
+        this.firebase = firebase;
     }
 
     /**
@@ -23,7 +26,11 @@ public class DeckController {
      * */
     @GetMapping("/decks")
     List<Deck> all(@RequestHeader String authorization){
-        String uid = getUserIdFromAuthHeader(authorization);
+        if(authorization == null){
+            return null;
+        }
+
+        String uid = firebase.getUserIdFromAuthHeader(authorization);
         if(uid == null){
             return null;
         }
@@ -41,9 +48,13 @@ public class DeckController {
     /**
      * @return Returns a list of the id and the title of all the decks
      * */
-    @PostMapping("/decks/basic")
+    @GetMapping("/decks/basic")
     List<SimplifiedDeckView> basic(@RequestHeader String authorization){
-        String uid = getUserIdFromAuthHeader(authorization);
+        if(authorization == null){
+            return null;
+        }
+
+        String uid = firebase.getUserIdFromAuthHeader(authorization);
         if(uid == null){
             return null;
         }
@@ -64,7 +75,7 @@ public class DeckController {
      * */
     @PostMapping("/decks/create")
     Deck newDeck(@RequestBody Deck deck, @RequestHeader String authorization){
-        String uid = getUserIdFromAuthHeader(authorization);
+        String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         //Has to be logged in to create deck
         if(uid != null){
@@ -78,7 +89,7 @@ public class DeckController {
 
     @GetMapping("/decks/{id}")
     Deck one(@PathVariable long id, @RequestHeader String authorization){
-        String uid = getUserIdFromAuthHeader(authorization);
+        String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         if(uid == null){
             return null;
@@ -101,7 +112,7 @@ public class DeckController {
 
     @PostMapping("/decks/edit")
     void edit(@RequestBody Deck deck, @RequestHeader String authorization){
-        String uid = getUserIdFromAuthHeader(authorization);
+        String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         if(uid == null){
             return;
@@ -121,7 +132,7 @@ public class DeckController {
 
     @DeleteMapping("/decks/{id}")
     void deleteDeck(@PathVariable Long id, @RequestHeader String authorization){
-        String uid = getUserIdFromAuthHeader(authorization);
+        String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         if(uid == null){
             return;

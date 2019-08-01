@@ -1,9 +1,11 @@
 package com.example.util;
 
 import com.google.firebase.auth.FirebaseAuth;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
 
+@Service
 public class Firebase {
 
     /**
@@ -11,7 +13,7 @@ public class Firebase {
      * @param authHeader A HTTP request header with the shape of "[type] [token]"
      * @return returns the user id from Firebase
     * */
-    public static String getUserIdFromAuthHeader(String authHeader){
+    public String getUserIdFromAuthHeader(String authHeader){
          String[] strings = authHeader.split(" ");
 
         //Check what we can before contacting Firebase
@@ -22,7 +24,7 @@ public class Firebase {
          return null;
     }
 
-    public static String getUserIdFromToken(String token){
+    public String getUserIdFromToken(String token){
         String userId = null;
 
         try {
