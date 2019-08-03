@@ -100,15 +100,12 @@ public class DeckController {
             return null;
         }
 
-        List<Deck> decks = repository.findAll();
+        Optional<Deck> deck = repository.findById(id);
 
-        for (Deck deck : decks) {
-            if(deck.getId() == id){
-                //Needs to own the deck in order to get info
-                if(deck.getUid().equals(uid)) {
-                    return deck;
-                }
-                return null;
+        if(deck.isPresent()){
+            Deck d = deck.get();
+            if(d.getUid().equals(uid)){
+                return d;
             }
         }
 
