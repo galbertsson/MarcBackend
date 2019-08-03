@@ -74,17 +74,22 @@ public class DeckController {
      * @param deck The Deck that should be saved
      * */
     @PostMapping("/decks/create")
-    Deck newDeck(@RequestBody Deck deck, @RequestHeader String authorization){
+    boolean newDeck(@RequestBody Deck deck, @RequestHeader String authorization){
+        if(authorization == null){
+            return false;
+        }
         String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         //Has to be logged in to create deck
         if(uid != null){
             deck.setUid(uid);
 
-            return repository.save(deck);
+            repository.save(deck);
+
+            return true;
         }
 
-        return null;
+        return false;
     }
 
     @GetMapping("/decks/{id}")
