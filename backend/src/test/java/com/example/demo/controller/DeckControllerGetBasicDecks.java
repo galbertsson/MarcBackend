@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -42,6 +43,7 @@ public class DeckControllerGetBasicDecks {
     public void NoTokenGetDeck() throws Exception {
         this.mockMvc.perform(get("/decks/basic"))
                 .andDo(print())
+                .andExpect(status().is(400))
                 .andExpect(content().string(""));
     }
 
@@ -52,6 +54,7 @@ public class DeckControllerGetBasicDecks {
 
         this.mockMvc.perform(get("/decks/basic").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().string(""));
     }
 
@@ -63,6 +66,7 @@ public class DeckControllerGetBasicDecks {
 
         this.mockMvc.perform(get("/decks/basic").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().string("[]"));
     }
 
@@ -82,6 +86,7 @@ public class DeckControllerGetBasicDecks {
 
         this.mockMvc.perform(get("/decks/basic").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck'}]"));
     }
 
@@ -106,6 +111,7 @@ public class DeckControllerGetBasicDecks {
 
         this.mockMvc.perform(get("/decks/basic").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck'},{'id':2, 'title':'Another Deck'}]"));
     }
 
@@ -130,6 +136,7 @@ public class DeckControllerGetBasicDecks {
 
         this.mockMvc.perform(get("/decks/basic").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck'}]"));
     }
 }

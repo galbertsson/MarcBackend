@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,6 +42,7 @@ public class DeckControllerGetDecks {
     public void NoTokenGetDeck() throws Exception {
         this.mockMvc.perform(get("/decks"))
                 .andDo(print())
+                .andExpect(status().is(400))
                 .andExpect(content().string(""));
     }
 
@@ -51,6 +53,7 @@ public class DeckControllerGetDecks {
 
         this.mockMvc.perform(get("/decks").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().string(""));
     }
 
@@ -61,6 +64,7 @@ public class DeckControllerGetDecks {
 
         this.mockMvc.perform(get("/decks").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().string("[]"));
     }
 
@@ -80,6 +84,7 @@ public class DeckControllerGetDecks {
 
         this.mockMvc.perform(get("/decks").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck', 'uid':'123', 'notes':null}]"));
     }
 
@@ -104,6 +109,7 @@ public class DeckControllerGetDecks {
 
         this.mockMvc.perform(get("/decks").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck', 'uid':'123', 'notes':null},{'id':2, 'title':'Another Deck', 'uid':'123', 'notes':null}]"));
     }
 
@@ -128,6 +134,7 @@ public class DeckControllerGetDecks {
 
         this.mockMvc.perform(get("/decks").header("Authorization", "test"))
                 .andDo(print())
+                .andExpect(status().is(200))
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck', 'uid':'123', 'notes':null}]"));
     }
 }
