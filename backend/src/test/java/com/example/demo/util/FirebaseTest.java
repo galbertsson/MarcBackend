@@ -4,15 +4,12 @@ import com.example.util.Firebase;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +37,6 @@ public class FirebaseTest {
     }
 
     Firebase firebase = new Firebase();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     @Test
     public void InvalidTokenTest(){

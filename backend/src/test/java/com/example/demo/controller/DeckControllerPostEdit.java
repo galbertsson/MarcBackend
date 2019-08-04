@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.model.BasicNote;
 import com.example.model.ClozeNote;
 import com.example.model.Deck;
-import com.example.model.Note;
 import com.example.repository.DeckRepository;
 import com.example.util.Firebase;
 import org.junit.Test;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
