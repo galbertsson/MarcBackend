@@ -34,9 +34,6 @@ public class DeckControllerGetDecks {
     @MockBean
     private DeckRepository deckRepository;
 
-    /*
-     * Testing validation of invalid user input
-     */
     //No token sent
     @Test
     public void NoTokenGetDeck() throws Exception {
@@ -113,7 +110,7 @@ public class DeckControllerGetDecks {
                 .andExpect(content().json("[{'id':1, 'title':'Test Deck', 'uid':'123', 'notes':null},{'id':2, 'title':'Another Deck', 'uid':'123', 'notes':null}]"));
     }
 
-    //Mocked "Valid" token sent, 2 decks in repository
+    //Mocked "Valid" token sent, 2 decks in repository, one is ours
     @Test
     public void WithTokenGetOneOurDeck() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn("123");

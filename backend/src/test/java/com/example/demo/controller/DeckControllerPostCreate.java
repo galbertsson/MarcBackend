@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.model.BasicNote;
+import com.example.model.ClozeNote;
 import com.example.repository.DeckRepository;
 import com.example.util.Firebase;
 import org.junit.Test;
@@ -11,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -44,7 +46,7 @@ public class DeckControllerPostCreate {
 
     //Invalid token, valid deck
     @Test
-    public void InvalidTokenGetDeck() throws Exception {
+    public void InvalidTokenValidDeck() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn(null);
 
         this.mockMvc.perform(post("/decks/create")
@@ -54,11 +56,13 @@ public class DeckControllerPostCreate {
                 ).andDo(print())
                 .andExpect(status().is(200))
                 .andExpect(content().string("false"));
+
+        verify(deckRepository, never()).save(any());
     }
 
     //Mocked "Valid" token sent, no valid deck sent
     @Test
-    public void WithTokenGetDeck() throws Exception {
+    public void WithTokenInvalidDeck() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn("123");
 
         this.mockMvc.perform(post("/decks/create")
@@ -71,21 +75,26 @@ public class DeckControllerPostCreate {
 
     //Mocked "Valid" token sent, valid deck sent
     @Test
-    public void WithTokenGetOneDeck() throws Exception {
+    public void WithTokenCreateDeck() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn("123");
 
         this.mockMvc.perform(post("/decks/create")
                     .header("Authorization", "test")
                     .contentType("application/json")
-                    .content("{\"title\":\"test\",\"notes\":[]}"))
+                    .content("{\"title\":\"test Title\",\"notes\":[]}"))
                 .andDo(print())
                 .andExpect(status().is(200))
                 .andExpect(content().string("true"));
+
+        verify(deckRepository).save(argThat(deck -> deck.getTitle().equals("test Title")
+                                                    && deck.getUid().equals("123")
+                                                    && deck.getNotes().size() == 0
+                                            ));
     }
 
     //Mocked "Valid" token sent, deck with notes sent
     @Test
-    public void WithTokenGetTwoDecks() throws Exception {
+    public void WithTokenCreateDeckWithNotes() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn("123");
 
         this.mockMvc.perform(post("/decks/create")
@@ -99,5 +108,15 @@ public class DeckControllerPostCreate {
                 .andDo(print())
                 .andExpect(status().is(200))
                 .andExpect(content().string("true"));
+
+        verify(deckRepository).save(argThat(deck -> deck.getTitle().equals("test")
+                && deck.getUid().equals("123")
+                && deck.getNotes().size() == 2
+                && deck.getNotes().get(0) instanceof BasicNote
+                && ((BasicNote)deck.getNotes().get(0)).getFront().equals("Dog")
+                && ((BasicNote)deck.getNotes().get(0)).getBack().equals("Hund")
+                && deck.getNotes().get(1) instanceof ClozeNote
+                && ((ClozeNote)deck.getNotes().get(1)).getText().equals("Apollo {a:11} was the first manned mission to land on the moon")
+        ));
     }
 }

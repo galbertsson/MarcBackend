@@ -35,9 +35,6 @@ public class DeckControllerGetSingle {
     @MockBean
     private DeckRepository deckRepository;
 
-    /*
-     * Testing validation of invalid user input
-     */
     //No token sent
     @Test
     public void NoTokenCreateDeck() throws Exception {
@@ -60,7 +57,7 @@ public class DeckControllerGetSingle {
 
     //Mocked "Valid" token sent, no valid id sent
     @Test
-    public void WithTokenGetDeck() throws Exception {
+    public void WithTokenNoValidId() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn("123");
 
         this.mockMvc.perform(get("/decks/ad")
@@ -88,7 +85,7 @@ public class DeckControllerGetSingle {
 
     //Mocked "Valid" token sent, valid id sent, not our deck in repo
     @Test
-    public void WithTokenGetTwoDecks() throws Exception {
+    public void WithTokenNotOurDeck() throws Exception {
         when(firebase.getUserIdFromAuthHeader("test")).thenReturn("123");
 
         Deck d = new Deck("English");
