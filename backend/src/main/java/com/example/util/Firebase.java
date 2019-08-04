@@ -10,6 +10,7 @@ public class Firebase {
 
     /**
      * Given an auth header with the specified shape it returns the token if the type and token is valid.
+     * If the token is invalid null is returned.
      * @param authHeader A HTTP request header with the shape of "[type] [token]"
      * @return returns the user id from Firebase
     * */
@@ -24,13 +25,19 @@ public class Firebase {
          return null;
     }
 
+    /**
+     * Given an non null string token, it returns the user id that belongs to the token.
+     * If the token is invalid null is returned
+     * @param token The token to be validated
+     * @return The user id from firebase
+     * */
     public String getUserIdFromToken(String token){
-        String userId = null;
+        String userId;
 
         try {
             userId = FirebaseAuth.getInstance().verifyIdTokenAsync(token).get().getUid();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            return null;
         }
 
         return userId;
