@@ -139,19 +139,23 @@ public class DeckController {
     }
 
     @DeleteMapping("/decks/{id}")
-    void deleteDeck(@PathVariable Long id, @RequestHeader String authorization){
+    boolean deleteDeck(@PathVariable Long id, @RequestHeader String authorization){
         String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         if(uid == null){
-            return;
+            return false;
         }
 
-        Deck deck = repository.findById(id).orElseThrow(() ->
-                new DeckNotFoundException(id)
-        );
+        Optional<Deck> optionalDeck = repository.findById(id);
+        if(optionalDeck.isPresent()){
+            Deck deck = optionalDeck.get();
 
-        if(deck.getUid().equals(uid)){
-            repository.deleteById(id);
+            if(deck.getUid().equals(uid)){
+                repository.deleteById(id);
+                return true;
+            }
         }
+
+        return false;
     }
 }
