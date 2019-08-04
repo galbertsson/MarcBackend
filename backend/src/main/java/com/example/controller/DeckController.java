@@ -113,23 +113,29 @@ public class DeckController {
     }
 
     @PostMapping("/decks/edit")
-    void edit(@RequestBody Deck deck, @RequestHeader String authorization){
+    boolean edit(@RequestBody Deck deck, @RequestHeader String authorization){
         String uid = firebase.getUserIdFromAuthHeader(authorization);
 
         if(uid == null){
-            return;
+            return false;
         }
 
-        Deck repDeck = repository.findById(deck.getId()).orElseThrow(() ->
-                new DeckNotFoundException(deck.getId())
-        );
+        Optional<Deck> optionalDeck = repository.findById(deck.getId());
 
-        //Only allowed to edit a deck that we own
-        if(repDeck.getUid().equals(uid)){
-            repDeck.setNotes(deck.getNotes());
-            repDeck.setTitle(deck.getTitle());
-            repository.save(repDeck);
+        if(optionalDeck.isPresent()){
+            Deck repDeck = optionalDeck.get();
+
+            //Only allowed to edit a deck that we own
+            if(repDeck.getUid().equals(uid)){
+                repDeck.setNotes(deck.getNotes());
+                repDeck.setTitle(deck.getTitle());
+                repository.save(repDeck);
+
+                return true;
+            }
         }
+
+        return false;
     }
 
     @DeleteMapping("/decks/{id}")
