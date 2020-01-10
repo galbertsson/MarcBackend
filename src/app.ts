@@ -34,16 +34,24 @@ passport.use(new Strategy((username, password, done) => {
 
     //TODO: replace with logic to get info from db
     //const user = users.find(user => user.username === username && user.password === password);
+    let dbUser: IUser;
+
     connectionInstance.getUserFromUsername(username)
-        .then(user => compare(password, user.password))
+        .then(user => {
+            dbUser = user;
+            return compare(password, user.password);
+        })
         .then(isCorrectPassword => {
             if (isCorrectPassword) {
-                done(null, user);
+                done(null, dbUser);
             } else {
                 done('Incorrect password', false);
             }
         })
-        .catch(err => done(err, false));
+        .catch(err => {
+            console.log('err', err);
+            done(err, false);
+        });
 
     /* if(user) {
         return done(null, user);
@@ -90,7 +98,7 @@ app.delete('/decks/:id', apiController.deleteDeck);
 
 //No need to be authenticated to access
 app.post('/register', authController.register);
-app.post('/login', passport.authenticate('local') ,authController.login);
+app.post('/login', authController.login);
 app.post('/logout', authController.logout);
 
 app.listen(port, err => {

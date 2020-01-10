@@ -6,6 +6,7 @@ import { UserModel } from '../../types/mongoose/IUserModel';
 class DBConnection {
 
     constructor () {
+        //TODO: ENV or something to this
         mongoose.connect('mongodb://localhost/marc', {useNewUrlParser: true, useUnifiedTopology: true });
     }
 
@@ -29,10 +30,19 @@ class DBConnection {
     }
 
     getUserFromUsername(username: string): Promise<IUser> {
+        console.log('L/F', username);
         return new Promise((resolve, reject) => 
             UserModel.findOne({username: username}, (err, user) => {
-                if (err) reject(err);
-                if (!user) reject('No User Found');
+                console.log('user', user);
+                console.log('err', err);
+                if (err) {
+                    console.log('Going to reject', err);
+                    reject(err);
+                };
+                if (!user) { //TODO: Look into how we can catch this in the middleware
+                    console.log('Going to reject!', user);
+                    reject('no_matching_user');
+                } 
 
                 resolve(user);
             })
