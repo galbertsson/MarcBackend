@@ -12,17 +12,11 @@ import * as authController from './controller/auth';
 import { connectionInstance } from './controller/dataConnection/DBConnection';
 import { compare } from 'bcrypt';
 
-/* const users = [
-    {username: 'foo', password: 'bar', id: '1'},
-    {username: 'foo1', password: 'bar', id: '2'},
-    {username: 'foo2', password: 'bar', id: '3'},
-    {username: 'foo3', password: 'bar', id: '4'}
-]; */
 
 dotenv.config();
 
-export const app = express();
-
+const app = express();
+//TODO: separate into app and server
 const port = 8080;
 
 if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
@@ -32,8 +26,6 @@ if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
 
 passport.use(new Strategy((username, password, done) => {
 
-    //TODO: replace with logic to get info from db
-    //const user = users.find(user => user.username === username && user.password === password);
     let dbUser: IUser;
 
     connectionInstance.getUserFromUsername(username)
@@ -53,15 +45,9 @@ passport.use(new Strategy((username, password, done) => {
             done(err, false);
         });
 
-    /* if(user) {
-        return done(null, user);
-    }
-
-    return done(null, false); */
 }));
 
 passport.serializeUser((user: IUser, done) => {
-    
     done(null, user._id);
 });
 
@@ -70,13 +56,7 @@ passport.deserializeUser((id: string, done) => {
     connectionInstance.getUserFromId(id)
         .then(user => done(null, user))
         .catch(err => done(err, false));
-/* 
-    if (user) {
-        return done(null, user);
-    }
 
-    
-    return done(null, false); */
 });
 
 app.use(session({
@@ -101,9 +81,13 @@ app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authController.logout);
 
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`Server is running on port ${port}`);
-});
+export function start () {
+    app.listen(port, err => {
+        if (err) {
+            return console.error(err);
+        }
+        return console.log(`Server is running on port ${port}`);
+    });
+};
+
+export default app;
