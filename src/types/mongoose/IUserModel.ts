@@ -4,7 +4,7 @@ import uuid = require('uuid');
 
 const userSchema = new Schema({
     _id: {type: String, default: uuid.v4},
-    username: {type: String, unique: true},
+    username: {type: String, unique: true, index: true},
     password: String
 });
 

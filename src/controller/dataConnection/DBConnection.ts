@@ -2,12 +2,15 @@ import mongoose from 'mongoose';
 import IDeck from '../../types/IDeck';
 import IUser from '../../types/IUser';
 import { UserModel } from '../../types/mongoose/IUserModel';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 class DBConnection {
 
     constructor () {
         //TODO: ENV or something to this
-        mongoose.connect('mongodb://localhost/marc', {useNewUrlParser: true, useUnifiedTopology: true });
+        mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true });
     }
 
     getDecksFromUser(user: IUser): IDeck[] {
@@ -21,11 +24,16 @@ class DBConnection {
         return true;
     }
 
-    createUser(username: string, hashedPassword: string) {
+    createUser(username: string, hashedPassword: string): Promise<boolean> {
         const newUser = new UserModel({username: username, password: hashedPassword});
-        newUser.save((err, user) => {
-            if (err) console.log(err);
-            console.log('user', user);
+        return new Promise((resolve, reject) => {
+            newUser.save((err) => {
+                if (err) {
+                    reject();
+                }
+
+                resolve(true);
+            });
         });
     }
 

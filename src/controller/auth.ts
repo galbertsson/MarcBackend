@@ -7,12 +7,14 @@ import passport from 'passport';
 export const register = (req: Request, res: Response) => {
     const username = get(req, 'body.username');
     const password = get(req, 'body.password');
+
     bcrypt.hash(password, 10, (err, hash) => {
         if (err) res.sendStatus(500);
 
         if (username && hash) {
-            connectionInstance.createUser(username, hash);
-            res.sendStatus(200);
+            connectionInstance.createUser(username, hash)
+            .then(() => res.sendStatus(200))
+            .catch(() => res.sendStatus(401));
         } else {
             res.sendStatus(400);
         }

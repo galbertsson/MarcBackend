@@ -8,22 +8,52 @@ const mongoDB = new MongoMemoryServer();
 describe('POST /register', () => {
 
     before(async () => {
-
         const uri = await mongoDB.getUri();
         const port = await mongoDB.getPort();
 
-        process.env.MONGO_URL = `${uri}:${port}`;
+        process.env.MONGO_URL = `mongodb://${uri}:${port}`;
         
-        //TODO: Could this be done nicer?, Needs to set env before creating it
-        //app = require('../../../src/app');
-        start();
+        //Start the express app
+        setTimeout(() => start(), 10000);
     });
 
     it('Should be able to register account', done => {
-        console.log('app', app);
         request(app)
         .post('/register')
-        .send('name=GMan&password=superSafePassword')
+        .send('username=GMan&password=superSafePassword')
         .expect(200, done);
+    });
+
+    it('Should not be able to register account with no username', done => {
+        request(app)
+        .post('/register')
+        .send('password=superSafePassword')
+        .expect(400, done);
+    });
+
+    it('Should not be able to register account with empty username', done => {
+        request(app)
+        .post('/register')
+        .send('username=&password=superSafePassword')
+        .expect(400, done);
+    });
+
+    it('Should not be able to register account with empty username', done => {
+        request(app)
+        .post('/register')
+        .send('username=&password=superSafePassword')
+        .expect(400, done);
+    });
+
+    it('Should not be able to register duplicate usernames', done => {
+        request(app)
+        .post('/register')
+        .send('username=Alex&password=superSafePassword')
+        .expect(200);
+
+        request(app)
+        .post('/register')
+        .send('username=Alex&password=NotSoSafePassword')
+        .expect(401, done);
     });
 });
