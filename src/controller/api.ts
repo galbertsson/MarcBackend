@@ -2,6 +2,7 @@ import { Response, Request } from 'express';
 import IUser from '../types/IUser';
 import IDeck from '../types/IDeck';
 import { connectionInstance } from './dataConnection/DBConnection';
+import User from '../types/IUser';
 
 export const getDecks = (req: Request, res: Response) => {
     if (req.user) {
@@ -13,10 +14,11 @@ export const getDecks = (req: Request, res: Response) => {
 };
 
 export const createDeck = (req: Request, res: Response) => {
-    if (req.user) {
+    const deck: IDeck = req.body;
 
-
-        connectionInstance.createDeck();
+    if (req.user && deck) {
+        connectionInstance.createDeck(deck);
+        res.sendStatus(200);
     } else {
         res.sendStatus(401);
     }

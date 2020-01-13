@@ -1,4 +1,4 @@
-/* import { expect } from 'chai';
+import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
 import { connectionInstance } from '../../src/controller/dataConnection/DBConnection';
@@ -28,7 +28,7 @@ describe('GET /api/decks', () => {
     it('Only send decks for logged in user', done => {
         const mockDB: IDeck[] = [
             {id: '1', ownerId: '1', title: 'Test', notes: []},
-            {id: '2', ownerId: '2', title: 'Test2', notes: []}
+            {id: '2', ownerId: '1', title: 'Test2', notes: []}
         ];
 
         const stubbedDB = sinon.stub(connectionInstance, 'getDecksFromUser');
@@ -53,4 +53,3 @@ describe('GET /api/decks', () => {
         done();
     });
 });
- */

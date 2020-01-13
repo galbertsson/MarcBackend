@@ -1,4 +1,4 @@
-/* import { expect } from 'chai';
+import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
 import { connectionInstance } from '../../src/controller/dataConnection/DBConnection';
@@ -26,31 +26,26 @@ describe('GET /api/decks/create', () => {
     });
 
     it('Only allow a logged in user to create decks', done => {
-        const mockDB: IDeck[] = [
-            {id: '1', ownerId: '1', title: 'Test', notes: []},
-            {id: '2', ownerId: '2', title: 'Test2', notes: []}
-        ];
+        const mockDB: IDeck = {id: '1', ownerId: '1', title: 'Test', notes: []};
 
-        const stubbedDB = sinon.stub(connectionInstance, 'getDecksFromUser');
-        stubbedDB.callsFake(() => {
-            return mockDB;
-        });
+        const stubbedDB = sinon.stub(connectionInstance, 'createDeck');
 
-        let jsonResponse;
         let statusResponse;
 
         createDeck(
-            { user: { username: 'foo', password: 'bar', id: '1' } } as unknown as Request,
+            { 
+                user: { username: 'foo', password: 'bar', id: '1' }, 
+                body: mockDB,
+            } as unknown as Request,
             {
                 sendStatus: (status: number) => statusResponse = status,
-                json: (json: IDeck) => jsonResponse = json
             } as unknown as Response
         );
 
-        expect(statusResponse).equal(undefined);
-        expect(jsonResponse).to.deep.equal(mockDB);
+        expect(statusResponse).equal(200);
+        expect(stubbedDB.callCount).to.equal(1);
+        expect(stubbedDB.args[0][0]).to.deep.equal(mockDB);
         
         done();
     });
 });
- */

@@ -16,7 +16,7 @@ class DBConnection {
         return [testDeck];
     };
 
-    createDeck (): boolean {
+    createDeck (deck: IDeck): boolean {
         //TODO: database magic
         return true;
     }
