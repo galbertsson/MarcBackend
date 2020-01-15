@@ -8,8 +8,7 @@ dotenv.config();
 
 class DBConnection {
 
-    constructor () {
-        //TODO: ENV or something to this
+    initConnection() {
         mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true });
     }
 

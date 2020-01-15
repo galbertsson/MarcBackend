@@ -86,6 +86,7 @@ export function start () {
         if (err) {
             return console.error(err);
         }
+        connectionInstance.initConnection();
         return console.log(`Server is running on port ${port}`);
     });
 };

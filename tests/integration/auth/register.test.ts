@@ -9,12 +9,11 @@ describe('POST /register', () => {
 
     before(async () => {
         const uri = await mongoDB.getUri();
-        const port = await mongoDB.getPort();
 
-        process.env.MONGO_URL = `mongodb://${uri}:${port}`;
+        process.env.MONGO_URL = uri;
         
         //Start the express app
-        setTimeout(() => start(), 10000);
+        start();
     });
 
     it('Should be able to register account', done => {
