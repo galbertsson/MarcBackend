@@ -2,6 +2,8 @@ import { describe } from 'mocha';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app, { start } from '../../../src/app';
+import { UserModel } from '../../../src/types/mongoose/IUserModel';
+import { connectionInstance } from '../../../src/controller/dataConnection/DBConnection';
 
 const mongoDB = new MongoMemoryServer();
 
@@ -9,7 +11,6 @@ describe('POST /register', () => {
 
     before(async () => {
         const uri = await mongoDB.getUri();
-
         process.env.MONGO_URL = uri;
         
         //Start the express app
@@ -37,22 +38,15 @@ describe('POST /register', () => {
         .expect(400, done);
     });
 
-    it('Should not be able to register account with empty username', done => {
-        request(app)
-        .post('/register')
-        .send('username=&password=superSafePassword')
-        .expect(400, done);
-    });
-
     it('Should not be able to register duplicate usernames', done => {
         request(app)
         .post('/register')
-        .send('username=Alex&password=superSafePassword')
-        .expect(200);
-
-        request(app)
-        .post('/register')
-        .send('username=Alex&password=NotSoSafePassword')
-        .expect(401, done);
+        .send('username=Alex&password=AlexSafePassword')
+        .expect(200, () => {
+            request(app)
+            .post('/register')
+            .send('username=Alex&password=AlexNotSoSafePassword')
+            .expect(401, done);
+        });
     });
 });

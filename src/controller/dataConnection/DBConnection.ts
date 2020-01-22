@@ -9,7 +9,7 @@ dotenv.config();
 class DBConnection {
 
     initConnection() {
-        mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true });
+        mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
     }
 
     getDecksFromUser(user: IUser): IDeck[] {
