@@ -14,7 +14,7 @@ class DBConnection {
 
     getDecksFromUser(user: IUser): IDeck[] {
         //TODO: Database magic
-        const testDeck: IDeck = { id: '1', title: 'Deck Test', ownerId: '1', notes: [] };
+        const testDeck: IDeck = { _id: '1', title: 'Deck Test', ownerId: '1', notes: [] };
         return [testDeck];
     };
 

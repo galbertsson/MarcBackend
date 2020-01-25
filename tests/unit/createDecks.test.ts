@@ -6,7 +6,7 @@ import IDeck from '../../src/types/IDeck';
 import { Response, Request } from 'express';
 import { createDeck } from '../../src/controller/api';
 
-describe('GET /api/decks/create', () => {
+describe('Unit Test: GET /api/decks/create', () => {
     it('Don\'t allow a non-logged in user to create a deck', done => {
         let jsonResponse;
         let statusResponse;
@@ -26,11 +26,11 @@ describe('GET /api/decks/create', () => {
     });
 
     it('Only allow a logged in user to create decks', done => {
-        const mockDB: IDeck = {id: '1', ownerId: '1', title: 'Test', notes: []};
+        const mockDB: IDeck = {_id: '1', ownerId: '1', title: 'Test', notes: []};
 
         const stubbedDB = sinon.stub(connectionInstance, 'createDeck');
 
-        let statusResponse;
+        let statusResponse; 
 
         createDeck(
             { 

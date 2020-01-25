@@ -2,17 +2,15 @@ import { describe } from 'mocha';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app, { start } from '../../../src/app';
-import { UserModel } from '../../../src/types/mongoose/IUserModel';
-import { connectionInstance } from '../../../src/controller/dataConnection/DBConnection';
 
 const mongoDB = new MongoMemoryServer();
 
-describe('POST /register', () => {
+describe('Integration Test: POST /register', () => {
 
     before(async () => {
         const uri = await mongoDB.getUri();
         process.env.MONGO_URL = uri;
-        
+
         //Start the express app
         start();
     });

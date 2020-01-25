@@ -6,7 +6,7 @@ import IDeck from '../../src/types/IDeck';
 import { Response, Request } from 'express';
 import { getDecks } from '../../src/controller/api';
 
-describe('GET /api/decks', () => {
+describe('Unit Test: GET /api/decks', () => {
     it('Don\'t send decks to non logged in, 401 no response', done => {
         let jsonResponse;
         let statusResponse;
@@ -27,8 +27,8 @@ describe('GET /api/decks', () => {
 
     it('Only send decks for logged in user', done => {
         const mockDB: IDeck[] = [
-            {id: '1', ownerId: '1', title: 'Test', notes: []},
-            {id: '2', ownerId: '1', title: 'Test2', notes: []}
+            {_id: '1', ownerId: '1', title: 'Test', notes: []},
+            {_id: '2', ownerId: '1', title: 'Test2', notes: []}
         ];
 
         const stubbedDB = sinon.stub(connectionInstance, 'getDecksFromUser');

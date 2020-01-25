@@ -1,7 +1,7 @@
 import Note from 'Note';
 
 interface Deck {
-    id: string;
+    _id: string;
     ownerId: string;
     title: string;
     notes: Array<Note>;
