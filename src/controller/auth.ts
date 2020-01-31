@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
-import { connectionInstance } from './dataConnection/DBConnection';
+import { createUser } from './dataConnection/DBConnection';
 import { get } from 'lodash';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
@@ -12,7 +12,7 @@ export const register = (req: Request, res: Response) => {
         if (err) res.sendStatus(500);
 
         if (username && hash) {
-            connectionInstance.createUser(username, hash)
+            createUser(username, hash)
             .then(() => res.sendStatus(200))
             .catch(() => res.sendStatus(401));
         } else {

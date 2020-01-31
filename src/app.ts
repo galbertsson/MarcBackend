@@ -9,8 +9,10 @@ import IUser from './types/IUser';
 
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
-import { connectionInstance } from './controller/dataConnection/DBConnection';
+//import { connectionInstance } from './controller/dataConnection/DBConnection';
 import { compare } from 'bcrypt';
+import { mongo } from 'mongoose';
+import { getUserFromId, getUserFromUsername, initConnection } from './controller/dataConnection/DBConnection';
 
 
 dotenv.config();
@@ -28,7 +30,7 @@ passport.use(new Strategy((username, password, done) => {
 
     let dbUser: IUser;
 
-    connectionInstance.getUserFromUsername(username)
+    getUserFromUsername(username)
         .then(user => {
             dbUser = user;
             return compare(password, user.password);
@@ -52,8 +54,7 @@ passport.serializeUser((user: IUser, done) => {
 });
 
 passport.deserializeUser((id: string, done) => {
-    
-    connectionInstance.getUserFromId(id)
+    getUserFromId(id)
         .then(user => done(null, user))
         .catch(err => done(err, false));
 
@@ -86,7 +87,7 @@ export function start () {
         if (err) {
             return console.error(err);
         }
-        connectionInstance.initConnection();
+        initConnection();  
         return console.log(`Server is running on port ${port}`);
     });
 };
