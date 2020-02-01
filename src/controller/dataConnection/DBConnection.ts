@@ -5,7 +5,7 @@ import { UserModel } from '../../types/mongoose/IUserModel';
 
 
 const initConnection = (uri: string): Promise<Mongoose> => {
-    return mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+    return mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 };
 
 const getDecksFromUser = (user: IUser): IDeck[] => {
@@ -20,7 +20,7 @@ const createDeck = (deck: IDeck): boolean => {
 };
 
 const createUser = (username: string, hashedPassword: string): Promise<boolean> => {
-    const newUser = new UserModel({username: username, password: hashedPassword});
+    const newUser = new UserModel({ username: username, password: hashedPassword });
     return new Promise((resolve, reject) => {
         newUser.save((err) => {
             if (err) {
@@ -33,14 +33,14 @@ const createUser = (username: string, hashedPassword: string): Promise<boolean> 
 };
 
 const getUserFromUsername = (username: string): Promise<IUser> => {
-    return new Promise((resolve, reject) => 
-        UserModel.findOne({username: username}, (err, user) => {
+    return new Promise((resolve, reject) =>
+        UserModel.findOne({ username: username }, (err, user) => {
             if (err) {
                 reject(err);
             };
             if (!user) { //TODO: Look into how we can catch this in the middleware
                 reject('no_matching_user');
-            } 
+            }
 
             resolve(user);
         })
@@ -48,18 +48,18 @@ const getUserFromUsername = (username: string): Promise<IUser> => {
 };
 
 const getUserFromId = (id: string): Promise<IUser> => {
-    return new Promise((resolve, reject) => 
+    return new Promise((resolve, reject) =>
         UserModel.findById(id)
             .then(user => resolve(user))
             .catch(err => reject(err))
     );
 };
 
-export { 
+export {
     initConnection,
     getDecksFromUser,
     createDeck,
     createUser,
     getUserFromUsername,
     getUserFromId
- };
+};

@@ -19,34 +19,34 @@ describe('Integration Test: POST /register', () => {
 
     it('Should be able to register account', done => {
         request(app)
-        .post('/register')
-        .send('username=GMan&password=superSafePassword')
-        .expect(200, done);
+            .post('/register')
+            .send('username=GMan&password=superSafePassword')
+            .expect(200, done);
     });
 
     it('Should not be able to register account with no username', done => {
         request(app)
-        .post('/register')
-        .send('password=superSafePassword')
-        .expect(400, done);
+            .post('/register')
+            .send('password=superSafePassword')
+            .expect(400, done);
     });
 
     it('Should not be able to register account with empty username', done => {
         request(app)
-        .post('/register')
-        .send('username=&password=superSafePassword')
-        .expect(400, done);
+            .post('/register')
+            .send('username=&password=superSafePassword')
+            .expect(400, done);
     });
 
     it('Should not be able to register duplicate usernames', done => {
         request(app)
-        .post('/register')
-        .send('username=Alex&password=AlexSafePassword')
-        .expect(200, () => {
-            request(app)
             .post('/register')
-            .send('username=Alex&password=AlexNotSoSafePassword')
-            .expect(401, done);
-        });
+            .send('username=Alex&password=AlexSafePassword')
+            .expect(200, () => {
+                request(app)
+                    .post('/register')
+                    .send('username=Alex&password=AlexNotSoSafePassword')
+                    .expect(401, done);
+            });
     });
 });

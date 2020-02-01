@@ -26,15 +26,15 @@ describe('Unit Test: GET /api/decks/create', () => {
     });
 
     it('Only allow a logged in user to create decks', done => {
-        const mockDB: IDeck = {_id: '1', ownerId: '1', title: 'Test', notes: []};
+        const mockDB: IDeck = { _id: '1', ownerId: '1', title: 'Test', notes: [] };
 
         const stubbedDB = sinon.stub(DBConnection, 'createDeck');
 
-        let statusResponse; 
+        let statusResponse;
 
         createDeck(
-            { 
-                user: { username: 'foo', password: 'bar', id: '1' }, 
+            {
+                user: { username: 'foo', password: 'bar', id: '1' },
                 body: mockDB,
             } as unknown as Request,
             {
@@ -45,7 +45,7 @@ describe('Unit Test: GET /api/decks/create', () => {
         expect(statusResponse).equal(200);
         expect(stubbedDB.callCount).to.equal(1);
         expect(stubbedDB.args[0][0]).to.deep.equal(mockDB);
-        
+
         done();
     });
 });

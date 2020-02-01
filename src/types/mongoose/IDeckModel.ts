@@ -3,7 +3,7 @@ import IDeck from 'IDeck';
 import uuid = require('uuid');
 
 const userSchema = new Schema({
-    _id: {type: String, default: uuid.v4},
+    _id: { type: String, default: uuid.v4 },
     ownerId: String,
     title: String,
     notes: []

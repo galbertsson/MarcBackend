@@ -62,10 +62,10 @@ app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: process.env.ENVIRONMENT !== 'DEV'}
+    cookie: { secure: process.env.ENVIRONMENT !== 'DEV' }
 }));
 
-app.use(urlencoded({extended: true}));
+app.use(urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -80,7 +80,7 @@ app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authController.logout);
 
-export function start () {
+export function start() {
     app.listen(port, err => {
         if (err) {
             return console.error(err);

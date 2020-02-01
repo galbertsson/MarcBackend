@@ -13,8 +13,8 @@ export const register = (req: Request, res: Response) => {
             res.sendStatus(500);
         } else if (username && hash) {
             createUser(username, hash)
-            .then(() => res.sendStatus(200))
-            .catch(() => res.sendStatus(401));
+                .then(() => res.sendStatus(200))
+                .catch(() => res.sendStatus(401));
         } else {
             res.sendStatus(400);
         }
@@ -22,20 +22,20 @@ export const register = (req: Request, res: Response) => {
 };
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('local', function(err, user) {
-        
+    passport.authenticate('local', function (err, user) {
+
         if (err && err !== 'no_matching_user') { //Something wrong with DB
             res.sendStatus(500);
             return;
         } else if (!user || err === 'no_matching_user') { //wrong password or non existing username
             res.statusCode = 401;
-            res.json({message: 'invalid_credentials'});
+            res.json({ message: 'invalid_credentials' });
             return;
         } else { //Correct login
             req.login(user, (err) => {
                 if (err) {
                     next(err);
-                } 
+                }
 
                 res.sendStatus(200);
             });

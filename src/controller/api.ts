@@ -1,8 +1,7 @@
 import { Response, Request } from 'express';
 import IUser from '../types/IUser';
 import IDeck from '../types/IDeck';
-import User from '../types/IUser';
-import { getDecksFromUser, createDeck as createDeckDb} from './dataConnection/DBConnection';
+import { getDecksFromUser, createDeck as createDeckDb } from './dataConnection/DBConnection';
 
 export const getDecks = (req: Request, res: Response) => {
     if (req.user) {

@@ -27,8 +27,8 @@ describe('Unit Test: GET /api/decks', () => {
 
     it('Only send decks for logged in user', done => {
         const mockDB: IDeck[] = [
-            {_id: '1', ownerId: '1', title: 'Test', notes: []},
-            {_id: '2', ownerId: '1', title: 'Test2', notes: []}
+            { _id: '1', ownerId: '1', title: 'Test', notes: [] },
+            { _id: '2', ownerId: '1', title: 'Test2', notes: [] }
         ];
 
         const stubbedDB = sinon.stub(DBConnection, 'getDecksFromUser');
@@ -49,7 +49,7 @@ describe('Unit Test: GET /api/decks', () => {
 
         expect(statusResponse).equal(undefined);
         expect(jsonResponse).to.deep.equal(mockDB);
-        
+
         done();
     });
 });
