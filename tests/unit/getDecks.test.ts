@@ -1,7 +1,7 @@
-/* import { expect } from 'chai';
+import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
-import { connectionInstance } from '../../src/controller/dataConnection/DBConnection';
+import * as DBConnection from '../../src/controller/dataConnection/DBConnection';
 import IDeck from '../../src/types/IDeck';
 import { Response, Request } from 'express';
 import { getDecks } from '../../src/controller/api';
@@ -31,7 +31,7 @@ describe('Unit Test: GET /api/decks', () => {
             {_id: '2', ownerId: '1', title: 'Test2', notes: []}
         ];
 
-        const stubbedDB = sinon.stub(connectionInstance, 'getDecksFromUser');
+        const stubbedDB = sinon.stub(DBConnection, 'getDecksFromUser');
         stubbedDB.callsFake(() => {
             return mockDB;
         });
@@ -52,4 +52,4 @@ describe('Unit Test: GET /api/decks', () => {
         
         done();
     });
-}); */
+});

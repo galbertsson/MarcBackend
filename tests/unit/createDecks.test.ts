@@ -1,7 +1,7 @@
-/* import { expect } from 'chai';
+import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
-import { connectionInstance } from '../../src/controller/dataConnection/DBConnection';
+import * as DBConnection from '../../src/controller/dataConnection/DBConnection';
 import IDeck from '../../src/types/IDeck';
 import { Response, Request } from 'express';
 import { createDeck } from '../../src/controller/api';
@@ -28,7 +28,7 @@ describe('Unit Test: GET /api/decks/create', () => {
     it('Only allow a logged in user to create decks', done => {
         const mockDB: IDeck = {_id: '1', ownerId: '1', title: 'Test', notes: []};
 
-        const stubbedDB = sinon.stub(connectionInstance, 'createDeck');
+        const stubbedDB = sinon.stub(DBConnection, 'createDeck');
 
         let statusResponse; 
 
@@ -48,4 +48,4 @@ describe('Unit Test: GET /api/decks/create', () => {
         
         done();
     });
-}); */
+});
