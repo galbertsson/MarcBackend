@@ -3,17 +3,23 @@ import { createUser } from './dataConnection/DBConnection';
 import { get } from 'lodash';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
+import { UserModel } from '../types/mongoose/IUserModel';
 
 export const register = (req: Request, res: Response) => {
     const username = get(req, 'body.username');
     const password = get(req, 'body.password');
 
     bcrypt.hash(password, 10, (err, hash) => {
-        if (err) res.sendStatus(500);
-
-        if (username && hash) {
+        if (err) {
+            res.sendStatus(500);
+        } else if (username && hash) {
             createUser(username, hash)
-            .then(() => res.sendStatus(200))
+            .then(() => {
+                UserModel.find({username: 'Alex'}, (err, users) => {
+                    console.log('users', users);
+                    res.sendStatus(200);
+                });
+            })
             .catch(() => res.sendStatus(401));
         } else {
             res.sendStatus(400);

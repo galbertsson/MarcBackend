@@ -3,29 +3,24 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app from '../../../src/app';
 import { initConnection } from '../../../src/controller/dataConnection/DBConnection';
-import mongoose from 'mongoose';
+import { UserModel } from '../../../src/types/mongoose/IUserModel';
 
-const mongoDB = new MongoMemoryServer();
+const mongoDB = new MongoMemoryServer({autoStart: false});
 
-describe('Integration Test: POST /register', () => {
+describe('Integration Test: POST /Create', () => {
 
     before(async () => {
-        console.log('BEFORE');
+        await mongoDB.start();
         const uri = await mongoDB.getUri();
-        process.env.MONGO_URL = uri;
 
-        initConnection();
+        await initConnection(uri);
+        await UserModel.ensureIndexes();
     });
 
     it('Should be able to register account', done => {
         request(app)
-        .post('/create')
+        .post('/register')
         .send('username=GMan&password=superSafePassword')
         .expect(200, done);
-    });
-
-    after(async () => {
-        console.log('AFTER');
-        await mongoose.disconnect();
     });
 });

@@ -1,13 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
 import IDeck from '../../types/IDeck';
 import IUser from '../../types/IUser';
 import { UserModel } from '../../types/mongoose/IUserModel';
-import dotenv from 'dotenv';
 
-dotenv.config();
 
-const initConnection = () => {
-    mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+const initConnection = (uri: string): Promise<Mongoose> => {
+    return mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
 };
 
 const getDecksFromUser = (user: IUser): IDeck[] => {

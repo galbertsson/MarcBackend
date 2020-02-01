@@ -9,9 +9,7 @@ import IUser from './types/IUser';
 
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
-//import { connectionInstance } from './controller/dataConnection/DBConnection';
 import { compare } from 'bcrypt';
-import { mongo } from 'mongoose';
 import { getUserFromId, getUserFromUsername, initConnection } from './controller/dataConnection/DBConnection';
 
 
@@ -87,7 +85,7 @@ export function start () {
         if (err) {
             return console.error(err);
         }
-        initConnection();  
+        initConnection(process.env.MONGO_URL);
         return console.log(`Server is running on port ${port}`);
     });
 };

@@ -3,18 +3,18 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app from '../../../src/app';
 import { initConnection } from '../../../src/controller/dataConnection/DBConnection';
-import mongoose from 'mongoose';
+import { UserModel } from '../../../src/types/mongoose/IUserModel';
 
 const mongoDB = new MongoMemoryServer();
 
 describe('Integration Test: POST /register', () => {
 
     before(async () => {
-        console.log('BEFORE');
+        await mongoDB.start();
         const uri = await mongoDB.getUri();
-        process.env.MONGO_URL = uri;
 
-        initConnection();
+        await initConnection(uri);
+        await UserModel.ensureIndexes();
     });
 
     it('Should be able to register account', done => {
@@ -48,10 +48,5 @@ describe('Integration Test: POST /register', () => {
             .send('username=Alex&password=AlexNotSoSafePassword')
             .expect(401, done);
         });
-    });
-
-    after(async () => {
-        console.log('AFTER');
-        await mongoose.disconnect();
     });
 });
