@@ -2,7 +2,9 @@ import mongoose, { Mongoose } from 'mongoose';
 import IDeck from '../../types/IDeck';
 import IUser from '../../types/IUser';
 import { UserModel } from '../../types/mongoose/IUserModel';
-
+import { DeckModel } from '../../types/mongoose/IDeckModel';
+import BasicNote from 'IBasicNote';
+import ClozeNote from 'IClozeNote';
 
 const initConnection = (uri: string): Promise<Mongoose> => {
     return mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
@@ -10,13 +12,21 @@ const initConnection = (uri: string): Promise<Mongoose> => {
 
 const getDecksFromUser = (user: IUser): IDeck[] => {
     //TODO: Database magic
-    const testDeck: IDeck = { _id: '1', title: 'Deck Test', ownerId: '1', notes: [] };
-    return [testDeck];
+    //const testDeck: IDeck = { _id: '1', title: 'Deck Test', ownerId: '1', notes: [] };
+    return [];
 };
 
-const createDeck = (deck: IDeck): boolean => {
-    //TODO: database magic
-    return true;
+const createDeck = (user: IUser, title: string, notes: Array<BasicNote|ClozeNote>): Promise<boolean> => {
+    const newDeck = new DeckModel({ownerId: user._id, title, notes});
+    return new Promise((resolve, reject) => {
+        newDeck.save((err) => {
+            if (err) {
+                reject();
+            }
+
+            resolve(true);
+        });
+    });
 };
 
 const createUser = (username: string, hashedPassword: string): Promise<boolean> => {

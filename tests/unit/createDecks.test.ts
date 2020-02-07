@@ -44,7 +44,8 @@ describe('Unit Test: GET /api/decks/create', () => {
 
         expect(statusResponse).equal(200);
         expect(stubbedDB.callCount).to.equal(1);
-        expect(stubbedDB.args[0][0]).to.deep.equal(mockDB);
+        expect(stubbedDB.args[0][1]).to.deep.equal(mockDB.title);
+        expect(stubbedDB.args[0][2]).to.deep.equal(mockDB.notes);
 
         done();
     });

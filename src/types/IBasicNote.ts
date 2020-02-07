@@ -3,3 +3,5 @@ interface BasicNote{
     front: string;
     back: string;
 }
+
+export default BasicNote;

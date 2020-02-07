@@ -11,6 +11,7 @@ import * as apiController from './controller/api';
 import * as authController from './controller/auth';
 import { compare } from 'bcrypt';
 import { getUserFromId, getUserFromUsername, initConnection } from './controller/dataConnection/DBConnection';
+import bodyParser from 'body-parser';
 
 
 dotenv.config();
@@ -66,6 +67,7 @@ app.use(session({
 }));
 
 app.use(urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 

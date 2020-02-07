@@ -1,12 +1,14 @@
 import { Document, Schema, model } from 'mongoose';
 import IDeck from 'IDeck';
 import uuid = require('uuid');
+import { BasicNoteSchema } from './IBasicNoteModel';
+import { ClozeNoteSchema } from './IClozeNoteModel';
 
-const userSchema = new Schema({
+const deckSchema = new Schema({
     _id: { type: String, default: uuid.v4 },
     ownerId: String,
     title: String,
-    notes: []
+    notes: [BasicNoteSchema, ClozeNoteSchema]
 });
 
-export const UserModel = model<IDeck & Document>('Deck', userSchema);
+export const DeckModel = model<IDeck & Document>('Deck', deckSchema);

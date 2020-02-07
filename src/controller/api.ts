@@ -1,7 +1,7 @@
 import { Response, Request } from 'express';
 import IUser from '../types/IUser';
-import IDeck from '../types/IDeck';
 import { getDecksFromUser, createDeck as createDeckDb } from './dataConnection/DBConnection';
+import { get } from 'lodash';
 
 export const getDecks = (req: Request, res: Response) => {
     if (req.user) {
@@ -13,13 +13,17 @@ export const getDecks = (req: Request, res: Response) => {
 };
 
 export const createDeck = (req: Request, res: Response) => {
-    const deck: IDeck = req.body;
+    const deckTitle: string = get(req, 'body.title');
+    const deckNotes: any = get(req, 'body.notes'); //TODO: Not sure how to handle this, array of almost ClozeNote or BasicNote, need to validate. Or maybe DB validates?
+    const user: IUser = req.user as IUser;
 
-    if (req.user && deck) {
-        createDeckDb(deck);
+    if (req.user && deckTitle && deckNotes) {
+        createDeckDb(user, deckTitle, deckNotes);
         res.sendStatus(200);
-    } else {
+    } else if (!req.user) {
         res.sendStatus(401);
+    } else {
+        res.sendStatus(400);
     }
 };
 
