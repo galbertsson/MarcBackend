@@ -45,11 +45,26 @@ describe('Integration Test: POST /Create', () => {
             .expect(401, done);
     });
 
-    it('Should not allow malformed deck', done => {
+    it('Should not allow malformed deck, no title', done => {
         const deck = {
             notes: [
                 {front: 'Test Front', back: 'Test Back'},
                 {test: 'Cloze Text test'}
+            ]
+        };
+
+        request(app)
+            .post('/api/decks/create')
+            .set('Cookie', userCookies)
+            .send(deck)
+            .expect(400, done);
+    });
+
+    it('Should not allow malformed deck, malformed notes', done => {
+        const deck = {
+            title: 'My deck',
+            notes: [
+                {this: 'isWrong'}
             ]
         };
 
