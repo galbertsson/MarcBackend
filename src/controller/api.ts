@@ -22,11 +22,10 @@ export const createDeck = (req: Request, res: Response) => {
     if (req.user) {
         createDeckDb(user, deckTitle, deckNotes)
         .then(() => res.sendStatus(200))
-        .catch(() => res.sendStatus(400)); //If mongoose rejected validation.
+        .catch(() => res.sendStatus(400));
     } else if (!req.user) {
         res.sendStatus(401);
     } else {
-        console.log('Not logged in!');
         res.sendStatus(400);
     }
 };

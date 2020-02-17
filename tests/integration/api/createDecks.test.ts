@@ -3,7 +3,6 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app from '../../../src/app';
 import { initConnection } from '../../../src/controller/dataConnection/MongoConnection';
-//import { UserModel } from '../../../src/types/mongoose/IUserModel';
 
 const mongoDB = new MongoMemoryServer({ autoStart: false });
 
@@ -33,8 +32,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                {front: 'Test Front', back: 'Test Back'},
-                {test: 'Cloze Text test'}
+                { front: 'Test Front', back: 'Test Back' },
+                { test: 'Cloze Text test' }
             ]
         };
 
@@ -47,8 +46,8 @@ describe('Integration Test: POST /Create', () => {
     it('Should not allow malformed deck, no title', done => {
         const deck = {
             notes: [
-                {front: 'Test Front', back: 'Test Back'},
-                {test: 'Cloze Text test'}
+                { front: 'Test Front', back: 'Test Back' },
+                { test: 'Cloze Text test' }
             ]
         };
 
@@ -63,7 +62,7 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'My deck',
             notes: [
-                {this: 'isWrong'}
+                { this: 'isWrong' }
             ]
         };
 
@@ -78,8 +77,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                {front: 'Test Front', back: 'Test Back'},
-                {test: 'Cloze Text test'}
+                { front: 'Test Front', back: 'Test Back' },
+                { text: 'Cloze Text test' }
             ]
         };
 

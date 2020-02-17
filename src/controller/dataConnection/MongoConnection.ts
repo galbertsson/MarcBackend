@@ -4,6 +4,7 @@ import BasicNote from 'IBasicNote';
 import ClozeNote from 'IClozeNote';
 import { MongoClient, Db, ObjectID } from 'mongodb';
 import deckSchema from '../../types/schemas/deckSchema';
+import { map } from 'lodash';
 
 const DB_NAME = 'marc';
 
@@ -21,21 +22,8 @@ const initConnection = (uri: string): Promise<boolean> => {
             } else {
                 db = resMongoClient.db(DB_NAME);
 
-                db.createCollection('decks', 
-                {
-                    validator: {
-                        $jsonSchema: {
-                            bsonType: 'object',
-                            required: ['name'],
-                            properties: {
-                                name: {
-                                    bsonType: 'string',
-                                    description: 'Name required'
-                                }
-                            }
-                        }
-                    }
-                }
+                db.createCollection('decks',
+                    deckSchema
                 );
 
                 for (const [key, data] of Object.entries(collections)) {
@@ -62,15 +50,13 @@ const getDecksFromUser = (user: IUser): IDeck[] => {
 };
 
 const createDeck = (user: IUser, title: string, notes: Array<BasicNote | ClozeNote>): Promise<boolean> => {
-    const deck = { title };
-    console.log('deck', deck);
+    const notesWithId = map(notes, (note) => ({_id: new ObjectID(), ...note}));
+    const deck = { ownerId: new ObjectID(user._id), title, notes: notesWithId };
+    console.log(notesWithId);
 
     return new Promise((resolve, reject) => {
         db.collection('decks').insertOne(deck, (err, res) => {
             if (err) {
-                console.log('Reject');
-                console.log(JSON.stringify(err));
-                console.log('res', res);
                 reject(err);
             } else {
                 resolve(true);
