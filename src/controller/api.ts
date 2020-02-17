@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import IUser from '../types/IUser';
-import { getDecksFromUser, createDeck as createDeckDb } from './dataConnection/DBConnection';
+import { getDecksFromUser, createDeck as createDeckDb } from './dataConnection/MongoConnection';
 import { get } from 'lodash';
 import ClozeNote from 'IClozeNote';
 import BasicNote from 'IBasicNote';
@@ -19,13 +19,14 @@ export const createDeck = (req: Request, res: Response) => {
     const deckNotes: Array<ClozeNote|BasicNote> = get(req, 'body.notes');
     const user: IUser = req.user as IUser;
 
-    if (req.user && deckTitle && deckNotes) {
+    if (req.user) {
         createDeckDb(user, deckTitle, deckNotes)
         .then(() => res.sendStatus(200))
         .catch(() => res.sendStatus(400)); //If mongoose rejected validation.
     } else if (!req.user) {
         res.sendStatus(401);
     } else {
+        console.log('Not logged in!');
         res.sendStatus(400);
     }
 };

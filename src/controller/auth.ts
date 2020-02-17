@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
-import { createUser } from './dataConnection/DBConnection';
+import { createUser } from './dataConnection/MongoConnection';
 import { get } from 'lodash';
 import bcrypt from 'bcrypt';
 import passport from 'passport';

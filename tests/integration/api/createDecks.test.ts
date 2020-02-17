@@ -2,8 +2,8 @@ import { describe } from 'mocha';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app from '../../../src/app';
-import { initConnection } from '../../../src/controller/dataConnection/DBConnection';
-import { UserModel } from '../../../src/types/mongoose/IUserModel';
+import { initConnection } from '../../../src/controller/dataConnection/MongoConnection';
+//import { UserModel } from '../../../src/types/mongoose/IUserModel';
 
 const mongoDB = new MongoMemoryServer({ autoStart: false });
 
@@ -16,7 +16,6 @@ describe('Integration Test: POST /Create', () => {
         const uri = await mongoDB.getUri();
 
         await initConnection(uri);
-        await UserModel.ensureIndexes();
 
         await request(app)
             .post('/register')

@@ -2,8 +2,7 @@ import { describe } from 'mocha';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import app from '../../../src/app';
-import { initConnection } from '../../../src/controller/dataConnection/DBConnection';
-import { UserModel } from '../../../src/types/mongoose/IUserModel';
+import { initConnection } from '../../../src/controller/dataConnection/MongoConnection';
 
 const mongoDB = new MongoMemoryServer();
 
@@ -14,7 +13,6 @@ describe('Integration Test: POST /register', () => {
         const uri = await mongoDB.getUri();
 
         await initConnection(uri);
-        await UserModel.ensureIndexes();
     });
 
     it('Should be able to register account', done => {

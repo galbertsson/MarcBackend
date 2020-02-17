@@ -10,7 +10,7 @@ import IUser from './types/IUser';
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
 import { compare } from 'bcrypt';
-import { getUserFromId, getUserFromUsername, initConnection } from './controller/dataConnection/DBConnection';
+import { getUserFromId, getUserFromUsername, initConnection } from './controller/dataConnection/MongoConnection';
 import bodyParser from 'body-parser';
 
 
@@ -28,16 +28,20 @@ if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
 passport.use(new Strategy((username, password, done) => {
 
     let dbUser: IUser;
+    console.log('username', username);
 
     getUserFromUsername(username)
         .then(user => {
+            console.log('A user', user);
             dbUser = user;
             return compare(password, user.password);
         })
         .then(isCorrectPassword => {
             if (isCorrectPassword) {
+                console.log('Correct!');
                 done(null, dbUser);
             } else {
+                console.log('incorrect password');
                 done('Incorrect password', false);
             }
         })
@@ -53,9 +57,16 @@ passport.serializeUser((user: IUser, done) => {
 });
 
 passport.deserializeUser((id: string, done) => {
+    console.log('Deserializing', id);
     getUserFromId(id)
-        .then(user => done(null, user))
-        .catch(err => done(err, false));
+        .then(user => {
+            console.log('Found user'); 
+            done(null, user);
+        })
+        .catch(err => {
+            console.log('Lost user');
+            done(err, false);
+        });
 
 });
 

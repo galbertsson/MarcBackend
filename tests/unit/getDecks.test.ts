@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
-import * as DBConnection from '../../src/controller/dataConnection/DBConnection';
+import * as DBConnection from '../../src/controller/dataConnection/MongoConnection';
 import IDeck from '../../src/types/IDeck';
 import { Response, Request } from 'express';
 import { getDecks } from '../../src/controller/api';
