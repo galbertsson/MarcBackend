@@ -8,17 +8,21 @@ export const register = (req: Request, res: Response) => {
     const username = get(req, 'body.username');
     const password = get(req, 'body.password');
 
-    bcrypt.hash(password, 10, (err, hash) => {
-        if (err) {
-            res.sendStatus(500);
-        } else if (username && hash) {
-            createUser(username, hash)
-                .then(() => res.sendStatus(200))
-                .catch(() => res.sendStatus(401));
-        } else {
-            res.sendStatus(400);
-        }
-    });
+    if (!username || !password) {
+        res.sendStatus(400);
+    } else {
+        bcrypt.hash(password, 10, (err, hash) => {
+            if (err) {
+                res.sendStatus(500);
+            } else if (hash) {
+                createUser(username, hash)
+                    .then(() => res.sendStatus(200))
+                    .catch(() => res.sendStatus(400));
+            } else {
+                res.sendStatus(400);
+            }
+        });
+    }
 };
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
@@ -34,7 +38,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         } else { //Correct login
             req.login(user, (err) => {
                 if (err) {
-                    next(err);
+                    next(err); //TODO: Is this wrong?; Seems strange?
                 }
 
                 res.sendStatus(200);
