@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
-import * as DBConnection from '../../src/controller/dataConnection/MongoConnection';
-import IDeck from '../../src/types/IDeck';
+import * as DBConnection from '../../../src/controller/dataConnection/MongoConnection';
+import IDeck from '../../../src/types/IDeck';
 import { Response, Request } from 'express';
-import { createDeck } from '../../src/controller/api';
+import { createDeck } from '../../../src/controller/api';
 
 describe('Unit Test: GET /api/decks/create', () => {
     it('Don\'t allow a non-logged in user to create a deck', done => {

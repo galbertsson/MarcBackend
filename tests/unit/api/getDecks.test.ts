@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import sinon from 'sinon';
-import * as DBConnection from '../../src/controller/dataConnection/MongoConnection';
-import IDeck from '../../src/types/IDeck';
+import * as DBConnection from '../../../src/controller/dataConnection/MongoConnection';
+import IDeck from '../../../src/types/IDeck';
 import { Response, Request } from 'express';
-import { getDecks } from '../../src/controller/api';
+import { getDecks } from '../../../src/controller/api';
+
 
 describe('Unit Test: GET /api/decks', () => {
     it('Don\'t send decks to non logged in, 401 no response', done => {
