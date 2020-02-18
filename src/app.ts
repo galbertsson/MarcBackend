@@ -28,25 +28,20 @@ if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
 passport.use(new Strategy((username, password, done) => {
 
     let dbUser: IUser;
-    console.log('username', username);
 
     getUserFromUsername(username)
         .then(user => {
-            console.log('A user', user);
             dbUser = user;
             return compare(password, user.password);
         })
         .then(isCorrectPassword => {
             if (isCorrectPassword) {
-                console.log('Correct!');
                 done(null, dbUser);
             } else {
-                console.log('incorrect password');
                 done('Incorrect password', false);
             }
         })
         .catch(err => {
-            console.log('err', err);
             done(err, false);
         });
 
@@ -57,14 +52,11 @@ passport.serializeUser((user: IUser, done) => {
 });
 
 passport.deserializeUser((id: string, done) => {
-    console.log('Deserializing', id);
     getUserFromId(id)
         .then(user => {
-            console.log('Found user'); 
             done(null, user);
         })
         .catch(err => {
-            console.log('Lost user');
             done(err, false);
         });
 
