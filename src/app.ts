@@ -3,15 +3,12 @@ import dotenv from 'dotenv';
 import express, { urlencoded } from 'express';
 import session from 'express-session';
 import passport from 'passport';
-import { Strategy } from 'passport-local';
-
-import IUser from './types/IUser';
 
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
-import { compare } from 'bcrypt';
-import { getUserFromId, getUserFromUsername, initConnection } from './controller/dataConnection/MongoConnection';
+import { initConnection } from './controller/dataConnection/MongoConnection';
 import bodyParser from 'body-parser';
+import initPassport from './utils/passportSetup';
 
 
 dotenv.config();
@@ -25,42 +22,7 @@ if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
     process.exit(1);
 }
 
-passport.use(new Strategy((username, password, done) => {
-
-    let dbUser: IUser;
-
-    getUserFromUsername(username)
-        .then(user => {
-            dbUser = user;
-            return compare(password, user.password);
-        })
-        .then(isCorrectPassword => {
-            if (isCorrectPassword) {
-                done(null, dbUser);
-            } else {
-                done('Incorrect password', false);
-            }
-        })
-        .catch(err => {
-            done(err, false);
-        });
-
-}));
-
-passport.serializeUser((user: IUser, done) => {
-    done(null, user._id);
-});
-
-passport.deserializeUser((id: string, done) => {
-    getUserFromId(id)
-        .then(user => {
-            done(null, user);
-        })
-        .catch(err => {
-            done(err, false);
-        });
-
-});
+initPassport();
 
 app.use(session({
     secret: process.env.COOKIE_SECRET,

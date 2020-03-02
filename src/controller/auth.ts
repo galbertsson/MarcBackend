@@ -26,12 +26,23 @@ export const register = (req: Request, res: Response) => {
 };
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate('local', function (err, user) {
+    const username = get(req, 'body.username');
+    const password = get(req, 'body.password');
 
-        if (err && err !== 'no_matching_user') { //Something wrong with DB
+    //Want type conversion
+    if (username == null || password == null) {
+        res.sendStatus(400);
+        return;
+    }
+
+    passport.authenticate('local', function (err, user) {
+        if (err && err === 'bad_request'){
+            res.sendStatus(400);
+        } 
+        else if (err && err !== 'invalid_credentials') { //Something wrong with DB
             res.sendStatus(500);
             return;
-        } else if (!user || err === 'no_matching_user') { //wrong password or non existing username
+        } else if (!user || err === 'invalid_credentials') { //wrong password or non existing username
             res.statusCode = 401;
             res.json({ message: 'invalid_credentials' });
             return;
