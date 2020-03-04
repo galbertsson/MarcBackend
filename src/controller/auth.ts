@@ -59,6 +59,10 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const logout = (req: Request, res: Response) => {
-    req.logOut();
-    res.sendStatus(200);
+    if (req.user) {
+        req.logOut();
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(401);
+    }
 };
