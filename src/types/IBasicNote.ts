@@ -1,4 +1,4 @@
-interface BasicNote{
+interface BasicNote {
     _id: string;
     front: string;
     back: string;

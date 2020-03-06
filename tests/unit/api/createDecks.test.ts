@@ -36,7 +36,7 @@ describe('Unit Test: GET /api/decks/create', () => {
                 body: mockDB,
             } as unknown as Request,
             {
-                sendStatus: (status: number) =>{ 
+                sendStatus: (status: number) => {
                     expect(status).equal(200);
                     expect(stubbedDB.callCount).to.equal(1);
                     expect(stubbedDB.args[0][1]).to.deep.equal(mockDB.title);

@@ -36,9 +36,9 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     }
 
     passport.authenticate('local', function (err, user) {
-        if (err && err === 'bad_request'){
+        if (err && err === 'bad_request') {
             res.sendStatus(400);
-        } 
+        }
         else if (err && err !== 'invalid_credentials') { //Something wrong with DB
             res.sendStatus(500);
             return;

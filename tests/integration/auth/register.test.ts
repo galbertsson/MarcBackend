@@ -44,8 +44,7 @@ describe('Integration Test: POST /register', () => {
                 request(app)
                     .post('/register')
                     .send('username=Alex&password=AlexNotSoSafePassword')
-                    .expect(400, done); //TODO: This needs to be updated?, Need to look at the reponse?
-                    
+                    .expect(400, done);
             });
     });
 });
