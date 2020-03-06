@@ -38,10 +38,16 @@ const initConnection = (uri: string): Promise<boolean> => {
     });
 };
 
-const getDecksFromUser = (user: IUser): IDeck[] => {
-    //TODO: Database magic
-    //const testDeck: IDeck = { _id: '1', title: 'Deck Test', ownerId: '1', notes: [] };
-    return [];
+const getDecksFromUser = (user: IUser): Promise<Array<IDeck>> => {
+    return new Promise((resolve, reject) => {
+        db.collection('decks').find({ ownerId: user._id }).toArray((err, decks) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(decks);
+            }
+        });
+    });
 };
 
 const createDeck = (user: IUser, title: string, notes: Array<BasicNote | ClozeNote>): Promise<boolean> => {

@@ -7,8 +7,15 @@ import BasicNote from 'IBasicNote';
 
 export const getDecks = (req: Request, res: Response) => {
     if (req.user) {
-        const decks = getDecksFromUser(req.user as IUser);
-        res.json(decks);
+        getDecksFromUser(req.user as IUser)
+            .then((decks) => {
+                res.statusCode = 200;
+                res.json(decks);
+            })
+            .catch(() => {
+                res.sendStatus(500);
+            });
+
     } else {
         res.sendStatus(401);
     }
@@ -16,13 +23,13 @@ export const getDecks = (req: Request, res: Response) => {
 
 export const createDeck = (req: Request, res: Response) => {
     const deckTitle: string = get(req, 'body.title');
-    const deckNotes: Array<ClozeNote|BasicNote> = get(req, 'body.notes');
+    const deckNotes: Array<ClozeNote | BasicNote> = get(req, 'body.notes');
     const user: IUser = req.user as IUser;
 
     if (req.user) {
         createDeckDb(user, deckTitle, deckNotes)
-        .then(() => res.sendStatus(200))
-        .catch(() => res.sendStatus(400));
+            .then(() => res.sendStatus(200))
+            .catch(() => res.sendStatus(400));
     } else if (!req.user) {
         res.sendStatus(401);
     } else {

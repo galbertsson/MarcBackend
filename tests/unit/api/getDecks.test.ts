@@ -34,23 +34,17 @@ describe('Unit Test: GET /api/decks', () => {
 
         const stubbedDB = sinon.stub(DBConnection, 'getDecksFromUser');
         stubbedDB.callsFake(() => {
-            return mockDB;
+            return new Promise((resolve) => resolve(mockDB));
         });
-
-        let jsonResponse;
-        let statusResponse;
 
         getDecks(
             { user: { username: 'foo', password: 'bar', id: '1' } } as unknown as Request,
             {
-                sendStatus: (status: number) => statusResponse = status,
-                json: (json: IDeck) => jsonResponse = json
+                json: (json: IDeck) => {
+                    expect(json).to.deep.equal(mockDB);
+                    done();
+                }
             } as unknown as Response
         );
-
-        expect(statusResponse).equal(undefined);
-        expect(jsonResponse).to.deep.equal(mockDB);
-
-        done();
     });
 });
