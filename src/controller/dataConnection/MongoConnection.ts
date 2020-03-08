@@ -120,6 +120,20 @@ const getUsersDeckFromId = (user: IUser, id: string): Promise<IDeck> => {
     });
 };
 
+const deleteUsersDeckFromId = (user: IUser, id: string): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+        db.collection('decks').deleteOne({ _id: new ObjectID(id), ownerId: new ObjectID(user._id) }, (err, res) => {
+            if (err) {
+                reject(err);
+            } else if (res.deletedCount !== 1) {
+                reject();
+            } else {
+                resolve(true);
+            }
+        });
+    });
+};
+
 export {
     initConnection,
     getDecksFromUser,
@@ -127,5 +141,6 @@ export {
     createUser,
     getUserFromUsername,
     getUserFromId,
-    getUsersDeckFromId
+    getUsersDeckFromId,
+    deleteUsersDeckFromId
 };

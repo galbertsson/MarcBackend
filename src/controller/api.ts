@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import IUser from '../types/IUser';
-import { getDecksFromUser, createDeck as createDeckDb, getUsersDeckFromId } from './dataConnection/MongoConnection';
+import { getDecksFromUser, createDeck as createDeckDb, getUsersDeckFromId, deleteUsersDeckFromId } from './dataConnection/MongoConnection';
 import { get } from 'lodash';
 import ClozeNote from 'IClozeNote';
 import BasicNote from 'IBasicNote';
@@ -65,5 +65,16 @@ export const editDeck = (req: Request, res: Response) => {
 };
 
 export const deleteDeck = (req: Request, res: Response) => {
-    res.sendStatus(404);
+    const deckId = get(req, 'params.id');
+    const user: IUser = req.user as IUser;
+
+    if (!user) {
+        res.sendStatus(401);
+    } else if (!deckId) {
+        res.sendStatus(400);
+    } else {
+        deleteUsersDeckFromId(user, deckId)
+            .then(() => res.sendStatus(200))
+            .catch(() => res.sendStatus(400));
+    }
 };
