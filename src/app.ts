@@ -38,9 +38,9 @@ app.use(passport.session());
 
 app.get('/api/decks', apiController.getDecks);
 app.post('/api/decks/create', apiController.createDeck);
-app.get('/decks/:id', apiController.getDeck);
-app.post('/decks/edit', apiController.editDeck);
-app.delete('/decks/:id', apiController.deleteDeck);
+app.get('/api/decks/:id', apiController.getDeck);
+app.post('/api/decks/edit', apiController.editDeck);
+app.delete('/api/decks/:id', apiController.deleteDeck);
 
 //No need to be authenticated to access
 app.post('/register', authController.register);

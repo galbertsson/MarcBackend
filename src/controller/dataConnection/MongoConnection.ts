@@ -108,11 +108,24 @@ const getUserFromId = (id: string): Promise<IUser> => {
     );
 };
 
+const getUsersDeckFromId = (user: IUser, id: string): Promise<IDeck> => {
+    return new Promise((resolve, reject) => {
+        db.collection('decks').findOne({ _id: new ObjectID(id), ownerId: new ObjectID(user._id) }, (err, deck) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(deck);
+            }
+        });
+    });
+};
+
 export {
     initConnection,
     getDecksFromUser,
     createDeck,
     createUser,
     getUserFromUsername,
-    getUserFromId
+    getUserFromId,
+    getUsersDeckFromId
 };

@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import IUser from '../types/IUser';
-import { getDecksFromUser, createDeck as createDeckDb } from './dataConnection/MongoConnection';
+import { getDecksFromUser, createDeck as createDeckDb, getUsersDeckFromId } from './dataConnection/MongoConnection';
 import { get } from 'lodash';
 import ClozeNote from 'IClozeNote';
 import BasicNote from 'IBasicNote';
@@ -40,12 +40,23 @@ export const createDeck = (req: Request, res: Response) => {
 export const getDeck = (req: Request, res: Response) => {
     const deckId = get(req, 'params.id');
 
-    if (!req.user) {
+    const user: IUser = req.user as IUser;
+
+    if (!user) {
         res.sendStatus(401);
     } else if (!deckId) {
         res.sendStatus(400);
     } else {
-
+        getUsersDeckFromId(user, deckId)
+            .then((deck) => {
+                if (deck) {
+                    res.statusCode = 200;
+                    res.json(deck);
+                } else {
+                    res.sendStatus(401);
+                }
+            })
+            .catch(() => res.sendStatus(400));
     }
 };
 

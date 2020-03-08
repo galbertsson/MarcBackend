@@ -55,20 +55,26 @@ describe('Integration Test: POST /api/deck', () => {
                 .send(deck)
                 .expect(200)
                 .catch(err => done(err));
+            
+            const res = await request(app)
+                .get('/api/decks')
+                .set('Cookie', userCookies)
+                .send();
+
+            const deckId = res.body[0]._id;
 
             await request(app)
-                .get('/api/decks')
-                .set('Cookie', user2Cookies)
+                .get(`/api/decks/${deckId}`)
+                .set('Cookie', userCookies)
                 .send()
                 .then(res => {
-                    expect(res.body.length).to.be.equal(1);
-
-                    const cleanedRes = omit(res.body[0], ['ownerId', '_id']);
-                    const cleanedNotes = res.body[0].notes.map((note: any) => omit(note, ['_id']));
+                    expect(res.status).to.be.equal(200);
+                    const cleanedRes = omit(res.body, ['ownerId', '_id']);
+                    const cleanedNotes = res.body.notes.map((note: any) => omit(note, ['_id']));
 
                     cleanedRes.notes = cleanedNotes;
 
-                    expect(cleanedRes).to.deep.equal(deck2);
+                    expect(cleanedRes).to.deep.equal(deck);
 
                     done();
                 })
@@ -92,48 +98,29 @@ describe('Integration Test: POST /api/deck', () => {
                 .send(deck)
                 .expect(200)
                 .catch(err => done(err));
-
-            await request(app)
+            
+            const res = await request(app)
                 .get('/api/decks')
-                .send()
-                .then(res => {
-                    expect(res.status).to.be.equal(401);
-                    expect(res.body).to.deep.equal({});
-                    done();
-                })
-                .catch(err => done(err));
-        })();
-    });
-
-    it('Must be logged in to request decks', (done) => {
-        (async function () {
-            const deck = {
-                title: 'Test Deck',
-                notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
-                ]
-            };
-
-            await request(app)
-                .post('/api/decks/create')
                 .set('Cookie', userCookies)
-                .send(deck)
-                .expect(200)
-                .catch(err => done(err));
+                .send();
+
+            const deckId = res.body[0]._id;
 
             await request(app)
-                .get('/api/decks')
+                .get(`/api/decks/${deckId}`)
+                .set('Cookie', user2Cookies)
                 .send()
                 .then(res => {
                     expect(res.status).to.be.equal(401);
                     expect(res.body).to.deep.equal({});
+
                     done();
                 })
                 .catch(err => done(err));
         })();
     });
 
+    //TODO: Fix
     it('Must be logged in to request decks', (done) => {
         (async function () {
             const deck = {
