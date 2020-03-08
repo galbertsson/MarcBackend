@@ -38,8 +38,15 @@ export const createDeck = (req: Request, res: Response) => {
 };
 
 export const getDeck = (req: Request, res: Response) => {
-    //req.params.id
-    res.sendStatus(404);
+    const deckId = get(req, 'params.id');
+
+    if (!req.user) {
+        res.sendStatus(401);
+    } else if (!deckId) {
+        res.sendStatus(400);
+    } else {
+
+    }
 };
 
 export const editDeck = (req: Request, res: Response) => {
