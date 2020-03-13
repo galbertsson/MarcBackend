@@ -134,6 +134,33 @@ const deleteUsersDeckFromId = (user: IUser, id: string): Promise<boolean> => {
     });
 };
 
+const editExistingDeck = (user: IUser, deck: IDeck): Promise<boolean> => {
+    const notesWithId = map(deck.notes, (note) => {
+        if (!note._id) {
+            return { _id: new ObjectID(), ...note };
+        } else {
+            return { ...note, _id: new ObjectID(note._id) };
+        }
+    });
+
+    return new Promise((resolve, reject) => {
+        db.collection('decks').updateOne(
+            { _id: new ObjectID(deck._id), ownerId: new ObjectID(user._id) },
+            { $set: { title: deck.title, notes: notesWithId } },
+            {},
+            (err, res) => {
+                if (err) {
+                    reject(err);
+                } else if (res.modifiedCount !== 1) {
+                    reject();
+                } else {
+                    resolve(true);
+                }
+            }
+        );
+    });
+};
+
 export {
     initConnection,
     getDecksFromUser,
@@ -142,5 +169,6 @@ export {
     getUserFromUsername,
     getUserFromId,
     getUsersDeckFromId,
-    deleteUsersDeckFromId
+    deleteUsersDeckFromId,
+    editExistingDeck
 };
