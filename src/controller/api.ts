@@ -7,6 +7,8 @@ import ClozeNote from 'IClozeNote';
 import BasicNote from 'IBasicNote';
 
 export const getDecks = (req: Request, res: Response) => {
+    console.log('Got a request from user', req.user);
+
     if (req.user) {
         getDecksFromUser(req.user as IUser)
             .then((decks) => {

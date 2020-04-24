@@ -6,6 +6,7 @@ import passport from 'passport';
 
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
+import * as csrfController from './controller/csrf';
 import { initConnection } from './controller/dataConnection/MongoConnection';
 import bodyParser from 'body-parser';
 import initPassport from './utils/passportSetup';
@@ -14,7 +15,6 @@ import initPassport from './utils/passportSetup';
 dotenv.config();
 
 const app = express();
-//TODO: separate into app and server
 const port = 8080;
 
 if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
@@ -46,6 +46,8 @@ app.delete('/api/decks/:id', apiController.deleteDeck);
 app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.post('/logout', authController.logout);
+
+app.get('/csrf', csrfController.getToken);
 
 export function start() {
     app.listen(port, err => {
