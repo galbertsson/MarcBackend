@@ -51,7 +51,6 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
                 if (err) {
                     next(err); //TODO: Is this wrong?; Seems strange?
                 }
-
                 res.sendStatus(200);
             });
         }
