@@ -7,6 +7,7 @@ import { initConnection } from '../../../src/controller/dataConnection/MongoConn
 const mongoDB = new MongoMemoryServer({ autoStart: false });
 
 let userCookies: string[] = [];
+let csrfToken: string;
 
 describe('Integration Test: POST /Create', () => {
 
@@ -16,16 +17,25 @@ describe('Integration Test: POST /Create', () => {
 
         await initConnection(uri);
 
+        const csrfRes = await request(app)
+            .get('/csrf');
+
+        csrfToken = csrfRes.body.token;
+        userCookies = csrfRes.header['set-cookie'];
+
         await request(app)
             .post('/register')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=GMan&password=superSafePassword');
 
-        const resp = await request(app)
+        await request(app)
             .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=GMan&password=superSafePassword');
 
 
-        userCookies = resp.header['set-cookie'];
     });
 
     it('Should not allow non-logged in user to create', done => {
@@ -40,7 +50,7 @@ describe('Integration Test: POST /Create', () => {
         request(app)
             .post('/api/decks/create')
             .send(deck)
-            .expect(401, done);
+            .expect(403, done);
     });
 
     it('Should not allow malformed deck, no title', done => {
@@ -53,6 +63,7 @@ describe('Integration Test: POST /Create', () => {
 
         request(app)
             .post('/api/decks/create')
+            .set('csrf-token', csrfToken)
             .set('Cookie', userCookies)
             .send(deck)
             .expect(400, done);
@@ -68,6 +79,7 @@ describe('Integration Test: POST /Create', () => {
 
         request(app)
             .post('/api/decks/create')
+            .set('csrf-token', csrfToken)
             .set('Cookie', userCookies)
             .send(deck)
             .expect(400, done);
@@ -84,6 +96,7 @@ describe('Integration Test: POST /Create', () => {
 
         request(app)
             .post('/api/decks/create')
+            .set('csrf-token', csrfToken)
             .set('Cookie', userCookies)
             .send(deck)
             .expect(200, done);

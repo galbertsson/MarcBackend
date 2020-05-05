@@ -11,7 +11,6 @@ import * as csrfController from './controller/csrf';
 import { initConnection } from './controller/dataConnection/MongoConnection';
 import bodyParser from 'body-parser';
 import initPassport from './utils/passportSetup';
-import cookieParser from 'cookie-parser';
 import { csrfErrorHandler } from './utils/csurfSetup';
 
 
