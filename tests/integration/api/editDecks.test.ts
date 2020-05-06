@@ -99,6 +99,91 @@ describe('Integration Test: POST /api/edit', () => {
         })();
     });
 
+    it('Need to supply csrf token', done => {
+        (async function () {
+            const deck = {
+                title: 'Test Deck',
+                notes: [
+                    { front: 'Test Front', back: 'Test Back' },
+                    { text: 'Cloze Text test' }
+                ]
+            };
+
+            await request(app)
+                .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
+                .send(deck);
+
+            const res = await request(app)
+                .get('/api/decks')
+                .set('Cookie', userCookies)
+                .send();
+
+            await request(app)
+                .post('/api/decks/edit')
+                .send(deck)
+                .set('Cookie', userCookies)
+                .then((res) => {
+                    expect(res.status).to.be.equal(403);
+                })
+                .catch(err => done(err));
+
+            await request(app)
+                .get('/api/decks')
+                .set('Cookie', userCookies)
+                .send()
+                .then(res2 => {
+                    expect(res.body).to.deep.equal(res2.body);
+                    done();
+                })
+                .catch(err => done(err));
+        })();
+    });
+
+    it('Need to supply valid csrf token', done => {
+        (async function () {
+            const deck = {
+                title: 'Test Deck',
+                notes: [
+                    { front: 'Test Front', back: 'Test Back' },
+                    { text: 'Cloze Text test' }
+                ]
+            };
+
+            await request(app)
+                .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
+                .send(deck);
+
+            const res = await request(app)
+                .get('/api/decks')
+                .set('Cookie', userCookies)
+                .send();
+
+            await request(app)
+                .post('/api/decks/edit')
+                .send(deck)
+                .set('Cookie', userCookies)
+                .set('csrf-token', 'invalidToken')
+                .then((res) => {
+                    expect(res.status).to.be.equal(403);
+                })
+                .catch(err => done(err));
+
+            await request(app)
+                .get('/api/decks')
+                .set('Cookie', userCookies)
+                .send()
+                .then(res2 => {
+                    expect(res.body).to.deep.equal(res2.body);
+                    done();
+                })
+                .catch(err => done(err));
+        })();
+    });
+
     it('Should not allow non-owner to edit', done => {
         (async function () {
             const deck = {

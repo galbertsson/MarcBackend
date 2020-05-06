@@ -38,7 +38,7 @@ describe('Integration Test: POST /Create', () => {
 
     });
 
-    it('Should not allow non-logged in user to create', done => {
+    it('Should not allow a user with no CSRF token to create deck', done => {
         const deck = {
             title: 'Test Deck',
             notes: [
@@ -49,6 +49,40 @@ describe('Integration Test: POST /Create', () => {
 
         request(app)
             .post('/api/decks/create')
+            .set('Cookie', userCookies)
+            .send(deck)
+            .expect(403, done);
+    });
+
+    it('Needs to supply cookie not just csrf token', done => {
+        const deck = {
+            title: 'Test Deck',
+            notes: [
+                { front: 'Test Front', back: 'Test Back' },
+                { test: 'Cloze Text test' }
+            ]
+        };
+
+        request(app)
+            .post('/api/decks/create')
+            .set('csrf-token', csrfToken)
+            .send(deck)
+            .expect(403, done);
+    });
+
+    it('CSRF token needs to match cookies token', done => {
+        const deck = {
+            title: 'Test Deck',
+            notes: [
+                { front: 'Test Front', back: 'Test Back' },
+                { test: 'Cloze Text test' }
+            ]
+        };
+
+        request(app)
+            .post('/api/decks/create')
+            .set('Cookie', userCookies)
+            .set('csrf-token', 'foo')
             .send(deck)
             .expect(403, done);
     });

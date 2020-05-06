@@ -66,6 +66,23 @@ describe('Integration Test: POST /login', () => {
             .expect(401, done);
     });
 
+    it('Cannot login no csrf token', done => {
+        request(app)
+            .post('/login')
+            .set('Cookie', userCookies)
+            .send('username=Gman&password=fakePass')
+            .expect(403, done);
+    });
+
+    it('Cannot login invalid csrf token', done => {
+        request(app)
+            .post('/login')
+            .set('Cookie', userCookies)
+            .set('csrf-token', 'notAToken')
+            .send('username=Gman&password=fakePass')
+            .expect(403, done);
+    });
+
     it('Can sign in with valid password', done => {
         request(app)
             .post('/login')

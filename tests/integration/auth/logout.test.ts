@@ -83,6 +83,27 @@ describe('Integration Test: POST /logout', () => {
             .expect(401, done);
     });
 
+    it('Doing logout with no cookie causes no strange behavior', done => {
+        request(app)
+            .post('/logout')
+            .expect(403, done);
+    });
+
+    it('Doing logout with no csrf refuses logout', done => {
+        request(app)
+            .post('/logout')
+            .set('Cookie', userCookies)
+            .expect(403, done);
+    });
+
+    it('Doing logout with invalid csrf token refuses logout', done => {
+        request(app)
+            .post('/logout')
+            .set('csrf-token', 'foo')
+            .set('Cookie', userCookies)
+            .expect(403, done);
+    });
+
     it('Doing logout twice causes no strange behavior', done => {
         (async function () {
             await request(app)

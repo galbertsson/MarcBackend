@@ -219,4 +219,115 @@ describe('Integration Test: DELETE /api/deck', () => {
                 .catch(err => done(err));
         })();
     });
+
+    it('Must supply CSRF token to delete deck', (done) => {
+        (async function () {
+            const deck = {
+                title: 'Test Deck',
+                notes: [
+                    { front: 'Test Front', back: 'Test Back' },
+                    { text: 'Cloze Text test' }
+                ]
+            };
+
+            await request(app)
+                .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
+                .send(deck)
+                .expect(200)
+                .catch(err => done(err));
+
+            const res = await request(app)
+                .get('/api/decks')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
+                .send();
+
+            const deckId = res.body[0]._id;
+
+            await request(app)
+                .delete(`/api/decks/${deckId}`)
+                .set('Cookie', csrfToken)
+                .send()
+                .then(res => {
+                    expect(res.status).to.be.equal(403);
+                })
+                .catch(err => done(err));
+
+            await request(app)
+                .get(`/api/decks/${deckId}`)
+                .set('Cookie', userCookies)
+                .set('csrf-token', csrfToken)
+                .send()
+                .then(res => {
+                    expect(res.status).to.be.equal(200);
+                    const cleanedRes = omit(res.body, ['ownerId', '_id']);
+                    const cleanedNotes = res.body.notes.map((note: any) => omit(note, ['_id']));
+
+                    cleanedRes.notes = cleanedNotes;
+
+                    expect(cleanedRes).to.deep.equal(deck);
+
+                    done();
+                })
+                .catch(err => done(err));
+        })();
+    });
+
+    it('Must supply valid CSRF token to delete deck', (done) => {
+        (async function () {
+            const deck = {
+                title: 'Test Deck',
+                notes: [
+                    { front: 'Test Front', back: 'Test Back' },
+                    { text: 'Cloze Text test' }
+                ]
+            };
+
+            await request(app)
+                .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
+                .send(deck)
+                .expect(200)
+                .catch(err => done(err));
+
+            const res = await request(app)
+                .get('/api/decks')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
+                .send();
+
+            const deckId = res.body[0]._id;
+
+            await request(app)
+                .delete(`/api/decks/${deckId}`)
+                .set('Cookie', csrfToken)
+                .set('csrf-token', 'fakeToken')
+                .send()
+                .then(res => {
+                    expect(res.status).to.be.equal(403);
+                })
+                .catch(err => done(err));
+
+            await request(app)
+                .get(`/api/decks/${deckId}`)
+                .set('Cookie', userCookies)
+                .set('csrf-token', csrfToken)
+                .send()
+                .then(res => {
+                    expect(res.status).to.be.equal(200);
+                    const cleanedRes = omit(res.body, ['ownerId', '_id']);
+                    const cleanedNotes = res.body.notes.map((note: any) => omit(note, ['_id']));
+
+                    cleanedRes.notes = cleanedNotes;
+
+                    expect(cleanedRes).to.deep.equal(deck);
+
+                    done();
+                })
+                .catch(err => done(err));
+        })();
+    });
 });

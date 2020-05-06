@@ -24,6 +24,30 @@ describe('Integration Test: POST /register', () => {
         csrfToken = resp.body.token;
     });
 
+    it('Needs to supply cookie token', done => {
+        request(app)
+            .post('/register')
+            .send('username=GMan&password=superSafePassword')
+            .expect(403, done);
+    });
+
+    it('Needs to supply cstf token', done => {
+        request(app)
+            .post('/register')
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword')
+            .expect(403, done);
+    });
+
+    it('Needs to supply valid cstf token', done => {
+        request(app)
+            .post('/register')
+            .set('csrf-token', 'Foo')
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword')
+            .expect(403, done);
+    });
+
     it('Should be able to register account', done => {
         request(app)
             .post('/register')
