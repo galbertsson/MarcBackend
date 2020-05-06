@@ -10,6 +10,8 @@ const mongoDB = new MongoMemoryServer({ autoStart: false });
 
 let userCookies: string[] = [];
 let user2Cookies: string[] = [];
+let csrfToken: string;
+let csrfToken2: string;
 
 describe('Integration Test: POST /api/edit', () => {
 
@@ -19,24 +21,41 @@ describe('Integration Test: POST /api/edit', () => {
 
         await initConnection(uri);
 
-        await request(app)
-            .post('/register')
-            .send('username=GMan&password=superSafePassword');
-
         const resp = await request(app)
-            .post('/login')
-            .send('username=GMan&password=superSafePassword');
-
-        await request(app)
-            .post('/register')
-            .send('username=GMan2&password=superSafePassword');
-
-        const resp2 = await request(app)
-            .post('/login')
-            .send('username=GMan2&password=superSafePassword');
+            .get('/csrf');
 
         userCookies = resp.header['set-cookie'];
+        csrfToken = resp.body.token;
+
+        await request(app)
+            .post('/register')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword');
+
+        await request(app)
+            .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword');
+
+        const resp2 = await request(app)
+            .get('/csrf');
+
         user2Cookies = resp2.header['set-cookie'];
+        csrfToken2 = resp2.body.token;
+
+        await request(app)
+            .post('/register')
+            .set('csrf-token', csrfToken2)
+            .set('Cookie', user2Cookies)
+            .send('username=GMan2&password=superSafePassword');
+
+        await request(app)
+            .post('/login')
+            .set('csrf-token', csrfToken2)
+            .set('Cookie', user2Cookies)
+            .send('username=GMan2&password=superSafePassword');
     });
 
     it('Should not allow non-logged in user to edit', done => {
@@ -51,6 +70,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck);
 
@@ -63,7 +83,7 @@ describe('Integration Test: POST /api/edit', () => {
                 .post('/api/decks/edit')
                 .send(deck)
                 .then((res) => {
-                    expect(res.status).to.be.equal(401);
+                    expect(res.status).to.be.equal(403);
                 })
                 .catch(err => done(err));
 
@@ -91,6 +111,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck);
 
@@ -102,6 +123,7 @@ describe('Integration Test: POST /api/edit', () => {
             await request(app)
                 .post('/api/decks/edit')
                 .set('Cookie', user2Cookies)
+                .set('csrf-token', csrfToken2)
                 .send(deck)
                 .then((res) => {
                     expect(res.status).to.be.equal(400);
@@ -132,6 +154,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck);
 
@@ -142,6 +165,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/edit')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send()
                 .then((res) => {
@@ -161,7 +185,6 @@ describe('Integration Test: POST /api/edit', () => {
         })();
     });
 
-    //TODO: Test for malformed deck
     it('Should not allow for malformed decks', done => {
         (async function () {
             const deck = {
@@ -174,6 +197,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck);
 
@@ -188,6 +212,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/edit')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(newDeck)
                 .then((res) => {
@@ -207,7 +232,6 @@ describe('Integration Test: POST /api/edit', () => {
         })();
     });
 
-    //TODO: Test for successfully edit
     it('Should allow for edit', done => {
         (async function () {
             const deck = {
@@ -220,6 +244,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck);
 
@@ -234,6 +259,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .post('/api/decks/edit')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(newDeck)
                 .then((res) => {
@@ -243,6 +269,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             await request(app)
                 .get('/api/decks')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send()
                 .then(res2 => {
