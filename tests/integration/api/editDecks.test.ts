@@ -13,6 +13,9 @@ let user2Cookies: string[] = [];
 let csrfToken: string;
 let csrfToken2: string;
 
+let nonLoggedInUserCookies: string[] = [];
+let nonLoggedInCsrfToken: string;
+
 describe('Integration Test: POST /api/edit', () => {
 
     before(async () => {
@@ -56,6 +59,12 @@ describe('Integration Test: POST /api/edit', () => {
             .set('csrf-token', csrfToken2)
             .set('Cookie', user2Cookies)
             .send('username=GMan2&password=superSafePassword');
+
+        const csrfRes2 = await request(app)
+            .get('/csrf');
+
+        nonLoggedInCsrfToken = csrfRes2.body.token;
+        nonLoggedInUserCookies = csrfRes2.header['set-cookie'];
     });
 
     it('Should not allow non-logged in user to edit', done => {
@@ -82,6 +91,8 @@ describe('Integration Test: POST /api/edit', () => {
             await request(app)
                 .post('/api/decks/edit')
                 .send(deck)
+                .set('Cookie', nonLoggedInUserCookies)
+                .set('cstf-token', nonLoggedInCsrfToken)
                 .then((res) => {
                     expect(res.status).to.be.equal(403);
                 })

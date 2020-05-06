@@ -9,6 +9,9 @@ const mongoDB = new MongoMemoryServer({ autoStart: false });
 let userCookies: string[] = [];
 let csrfToken: string;
 
+let nonLoggedInUserCookies: string[] = [];
+let nonLoggedInCsrfToken: string;
+
 describe('Integration Test: POST /Create', () => {
 
     before(async () => {
@@ -35,7 +38,28 @@ describe('Integration Test: POST /Create', () => {
             .set('Cookie', userCookies)
             .send('username=GMan&password=superSafePassword');
 
+        const csrfRes2 = await request(app)
+            .get('/csrf');
 
+        nonLoggedInCsrfToken = csrfRes2.body.token;
+        nonLoggedInUserCookies = csrfRes2.header['set-cookie'];
+    });
+
+    it('Should not allow a user non logged in user to create deck', done => {
+        const deck = {
+            title: 'Test Deck',
+            notes: [
+                { front: 'Test Front', back: 'Test Back' },
+                { test: 'Cloze Text test' }
+            ]
+        };
+
+        request(app)
+            .post('/api/decks/create')
+            .set('Cookie', nonLoggedInUserCookies)
+            .set('csrf-token', nonLoggedInCsrfToken)
+            .send(deck)
+            .expect(401, done);
     });
 
     it('Should not allow a user with no CSRF token to create deck', done => {
