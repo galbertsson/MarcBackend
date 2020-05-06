@@ -6,6 +6,9 @@ import { initConnection } from '../../../src/controller/dataConnection/MongoConn
 
 const mongoDB = new MongoMemoryServer();
 
+let userCookies: string[] = [];
+let csrfToken: string;
+
 describe('Integration Test: POST /login', () => {
 
     before(async () => {
@@ -14,14 +17,24 @@ describe('Integration Test: POST /login', () => {
 
         await initConnection(uri);
 
+        const resp = await request(app)
+            .get('/csrf');
+
+        userCookies = resp.header['set-cookie'];
+        csrfToken = resp.body.token;
+
         await request(app)
             .post('/register')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=GMan&password=superSafePassword');
     });
 
     it('Needs to supply username', done => {
         request(app)
             .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('password=superSafePassword')
             .expect(400, done);
     });
@@ -29,6 +42,8 @@ describe('Integration Test: POST /login', () => {
     it('Needs to supply non empty username', done => {
         request(app)
             .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=&password=superSafePassword')
             .expect(401, done);
     });
@@ -36,6 +51,8 @@ describe('Integration Test: POST /login', () => {
     it('Needs to supply password', done => {
         request(app)
             .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=GMan')
             .expect(400, done);
     });
@@ -43,6 +60,8 @@ describe('Integration Test: POST /login', () => {
     it('Cannot login with an invalid password', done => {
         request(app)
             .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=Gman&password=fakePass')
             .expect(401, done);
     });
@@ -50,6 +69,8 @@ describe('Integration Test: POST /login', () => {
     it('Can sign in with valid password', done => {
         request(app)
             .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=GMan&password=superSafePassword')
             .expect(200, done);
     });
