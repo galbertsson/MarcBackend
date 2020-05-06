@@ -10,6 +10,8 @@ const mongoDB = new MongoMemoryServer({ autoStart: false });
 
 let userCookies: string[] = [];
 let user2Cookies: string[] = [];
+let csrfToken: string;
+let csrfToken2: string;
 
 describe('Integration Test: DELETE /api/deck', () => {
 
@@ -19,24 +21,42 @@ describe('Integration Test: DELETE /api/deck', () => {
 
         await initConnection(uri);
 
-        await request(app)
-            .post('/register')
-            .send('username=GMan&password=superSafePassword');
-
         const resp = await request(app)
-            .post('/login')
-            .send('username=GMan&password=superSafePassword');
-
-        await request(app)
-            .post('/register')
-            .send('username=GMan2&password=superSafePassword');
-
-        const resp2 = await request(app)
-            .post('/login')
-            .send('username=GMan2&password=superSafePassword');
+            .get('/csrf');
 
         userCookies = resp.header['set-cookie'];
+        csrfToken = resp.body.token;
+
+        await request(app)
+            .post('/register')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword');
+
+        await request(app)
+            .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword');
+
+        const resp2 = await request(app)
+            .get('/csrf');
+
         user2Cookies = resp2.header['set-cookie'];
+        csrfToken2 = resp2.body.token;
+
+        await request(app)
+            .post('/register')
+            .set('csrf-token', csrfToken2)
+            .set('Cookie', user2Cookies)
+            .send('username=GMan2&password=superSafePassword');
+
+        await request(app)
+            .post('/login')
+            .set('csrf-token', csrfToken2)
+            .set('Cookie', user2Cookies)
+            .send('username=GMan2&password=superSafePassword');
+
     });
 
     it('Should be allowed to delete our own deck', done => {
@@ -51,6 +71,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
@@ -58,6 +79,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             const res = await request(app)
                 .get('/api/decks')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send();
 
@@ -65,6 +87,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .delete(`/api/decks/${deckId}`)
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send()
                 .then(res => {
@@ -74,6 +97,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .get(`/api/decks/${deckId}`)
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send()
                 .then(res => {
@@ -98,6 +122,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
@@ -105,6 +130,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             const res = await request(app)
                 .get('/api/decks')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send();
 
@@ -112,6 +138,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .delete(`/api/decks/${deckId}`)
+                .set('csrf-token', csrfToken2)
                 .set('Cookie', user2Cookies)
                 .send()
                 .then(res => {
@@ -121,6 +148,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .get(`/api/decks/${deckId}`)
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send()
                 .then(res => {
@@ -150,6 +178,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
@@ -157,6 +186,7 @@ describe('Integration Test: DELETE /api/deck', () => {
 
             const res = await request(app)
                 .get('/api/decks')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send();
 
@@ -166,13 +196,14 @@ describe('Integration Test: DELETE /api/deck', () => {
                 .delete(`/api/decks/${deckId}`)
                 .send()
                 .then(res => {
-                    expect(res.status).to.be.equal(401);
+                    expect(res.status).to.be.equal(403);
                 })
                 .catch(err => done(err));
 
             await request(app)
                 .get(`/api/decks/${deckId}`)
                 .set('Cookie', userCookies)
+                .set('csrf-token', csrfToken)
                 .send()
                 .then(res => {
                     expect(res.status).to.be.equal(200);
