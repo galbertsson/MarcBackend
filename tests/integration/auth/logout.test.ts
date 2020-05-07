@@ -6,6 +6,9 @@ import { initConnection } from '../../../src/controller/dataConnection/MongoConn
 
 const mongoDB = new MongoMemoryServer();
 
+let userCookies: string[] = [];
+let csrfToken: string;
+
 describe('Integration Test: POST /logout', () => {
 
     before(async () => {
@@ -14,18 +17,26 @@ describe('Integration Test: POST /logout', () => {
 
         await initConnection(uri);
 
+        const resp = await request(app)
+            .get('/csrf');
+
+        userCookies = resp.header['set-cookie'];
+        csrfToken = resp.body.token;
+
         await request(app)
             .post('/register')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .send('username=GMan&password=superSafePassword');
     });
 
     it('Should not be able to use cookie after logout', (done) => {
         (async () => {
-            const resp = await request(app)
+            await request(app)
                 .post('/login')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
                 .send('username=GMan&password=superSafePassword');
-
-            const userCookies = resp.header['set-cookie'];
 
             const deck = {
                 title: 'Test Deck',
@@ -37,6 +48,7 @@ describe('Integration Test: POST /logout', () => {
             //Test that cookie works before logout
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
@@ -44,6 +56,7 @@ describe('Integration Test: POST /logout', () => {
 
             await request(app)
                 .post('/logout')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send()
                 .expect(200)
@@ -52,6 +65,7 @@ describe('Integration Test: POST /logout', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(401)
@@ -64,25 +78,52 @@ describe('Integration Test: POST /logout', () => {
     it('Doing logout when not logged in causes no strange behavior', done => {
         request(app)
             .post('/logout')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
             .expect(401, done);
+    });
+
+    it('Doing logout with no cookie causes no strange behavior', done => {
+        request(app)
+            .post('/logout')
+            .expect(403, done);
+    });
+
+    it('Doing logout with no csrf refuses logout', done => {
+        request(app)
+            .post('/logout')
+            .set('Cookie', userCookies)
+            .expect(403, done);
+    });
+
+    it('Doing logout with invalid csrf token refuses logout', done => {
+        request(app)
+            .post('/logout')
+            .set('csrf-token', 'foo')
+            .set('Cookie', userCookies)
+            .expect(403, done);
     });
 
     it('Doing logout twice causes no strange behavior', done => {
         (async function () {
-            const resp = await request(app)
+            await request(app)
                 .post('/login')
+                .set('csrf-token', csrfToken)
+                .set('Cookie', userCookies)
                 .send('username=GMan&password=superSafePassword');
 
-            const userCookies = resp.header['set-cookie'];
+            // const userCookies = resp.header['set-cookie'];
 
             await request(app)
                 .post('/logout')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .expect(200)
                 .catch(err => done(err));
 
             await request(app)
                 .post('/logout')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .expect(401)
                 .catch(err => done(err));

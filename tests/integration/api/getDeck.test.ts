@@ -10,6 +10,8 @@ const mongoDB = new MongoMemoryServer({ autoStart: false });
 
 let userCookies: string[] = [];
 let user2Cookies: string[] = [];
+let csrfToken: string;
+let csrfToken2: string;
 
 describe('Integration Test: POST /api/deck', () => {
 
@@ -19,24 +21,42 @@ describe('Integration Test: POST /api/deck', () => {
 
         await initConnection(uri);
 
-        await request(app)
-            .post('/register')
-            .send('username=GMan&password=superSafePassword');
 
         const resp = await request(app)
-            .post('/login')
-            .send('username=GMan&password=superSafePassword');
+            .get('/csrf');
+
+        userCookies = resp.header['set-cookie'];
+        csrfToken = resp.body.token;
 
         await request(app)
             .post('/register')
-            .send('username=GMan2&password=superSafePassword');
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword');
+
+        await request(app)
+            .post('/login')
+            .set('csrf-token', csrfToken)
+            .set('Cookie', userCookies)
+            .send('username=GMan&password=superSafePassword');
 
         const resp2 = await request(app)
-            .post('/login')
+            .get('/csrf');
+
+        user2Cookies = resp2.header['set-cookie'];
+        csrfToken2 = resp2.body.token;
+
+        await request(app)
+            .post('/register')
+            .set('csrf-token', csrfToken2)
+            .set('Cookie', user2Cookies)
             .send('username=GMan2&password=superSafePassword');
 
-        userCookies = resp.header['set-cookie'];
-        user2Cookies = resp2.header['set-cookie'];
+        await request(app)
+            .post('/login')
+            .set('csrf-token', csrfToken2)
+            .set('Cookie', user2Cookies)
+            .send('username=GMan2&password=superSafePassword');
     });
 
     it('Should be allowed to get our own deck', done => {
@@ -51,6 +71,7 @@ describe('Integration Test: POST /api/deck', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
@@ -94,6 +115,7 @@ describe('Integration Test: POST /api/deck', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
@@ -132,6 +154,7 @@ describe('Integration Test: POST /api/deck', () => {
 
             await request(app)
                 .post('/api/decks/create')
+                .set('csrf-token', csrfToken)
                 .set('Cookie', userCookies)
                 .send(deck)
                 .expect(200)
