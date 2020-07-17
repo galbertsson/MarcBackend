@@ -26,6 +26,7 @@ export const register = (req: Request, res: Response) => {
 };
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
+    console.log('Login attempt!');
     const username = get(req, 'body.username');
     const password = get(req, 'body.password');
 

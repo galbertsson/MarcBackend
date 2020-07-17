@@ -7,5 +7,6 @@ export function csrfErrorHandler(err: any, req: Request, res: Response, next: Ne
         return next(err);
     }
 
+    console.log(req);
     res.sendStatus(403);
 }

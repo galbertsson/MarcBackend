@@ -1,9 +1,9 @@
-'use strict';
 import dotenv from 'dotenv';
 import express, { urlencoded } from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import csrf from 'csurf';
+import cors from 'cors';
 
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
@@ -24,6 +24,14 @@ if (!process.env.ENVIRONMENT || !process.env.COOKIE_SECRET) {
     process.exit(1);
 }
 
+// Enable for development, not needed when using sub domains
+if (process.env.ENVIRONMENT === 'DEV') {
+    app.use(cors({
+        origin: 'http://127.0.0.1:3001',
+        credentials: true
+    }));
+}
+
 initPassport();
 
 app.use(session({
@@ -33,7 +41,7 @@ app.use(session({
     cookie: {
         secure: process.env.ENVIRONMENT !== 'DEV',
         httpOnly: true,
-        sameSite: 'lax'
+        sameSite: 'none'
     },
 }));
 
