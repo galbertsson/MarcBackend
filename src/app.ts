@@ -41,7 +41,7 @@ app.use(session({
     cookie: {
         secure: process.env.ENVIRONMENT !== 'DEV',
         httpOnly: true,
-        sameSite: 'none'
+        sameSite: 'lax'
     },
 }));
 
