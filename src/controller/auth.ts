@@ -52,7 +52,8 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
                 if (err) {
                     next(err); //TODO: Is this wrong?; Seems strange?
                 }
-                res.sendStatus(200);
+                res.statusCode = 200;
+                res.json({ id: user._id, username: user.username });
             });
         }
     })(req, res, next);
