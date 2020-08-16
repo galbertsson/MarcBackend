@@ -49,8 +49,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                { front: 'Test Front', back: 'Test Back' },
-                { test: 'Cloze Text test' }
+                { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                { test: 'Cloze Text test', type: 'closeNote' }
             ]
         };
 
@@ -66,8 +66,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                { front: 'Test Front', back: 'Test Back' },
-                { test: 'Cloze Text test' }
+                { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                { test: 'Cloze Text test', type: 'clozeNote' }
             ]
         };
 
@@ -82,8 +82,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                { front: 'Test Front', back: 'Test Back' },
-                { test: 'Cloze Text test' }
+                { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                { test: 'Cloze Text test', type: 'clozeNote' }
             ]
         };
 
@@ -98,8 +98,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                { front: 'Test Front', back: 'Test Back' },
-                { test: 'Cloze Text test' }
+                { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                { test: 'Cloze Text test', type: 'clozeNote' }
             ]
         };
 
@@ -114,8 +114,8 @@ describe('Integration Test: POST /Create', () => {
     it('Should not allow malformed deck, no title', done => {
         const deck = {
             notes: [
-                { front: 'Test Front', back: 'Test Back' },
-                { test: 'Cloze Text test' }
+                { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                { test: 'Cloze Text test', type: 'clozeNote' }
             ]
         };
 
@@ -147,8 +147,8 @@ describe('Integration Test: POST /Create', () => {
         const deck = {
             title: 'Test Deck',
             notes: [
-                { front: 'Test Front', back: 'Test Back' },
-                { text: 'Cloze Text test' }
+                { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                { text: 'Cloze Text test', type: 'clozeNote' }
             ]
         };
 

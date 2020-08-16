@@ -41,7 +41,7 @@ describe('Integration Test: POST /logout', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
                 ]
             };
 

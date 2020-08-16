@@ -74,8 +74,8 @@ describe('Integration Test: DELETE /api/deck', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -125,8 +125,8 @@ describe('Integration Test: DELETE /api/deck', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -181,8 +181,8 @@ describe('Integration Test: DELETE /api/deck', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -235,8 +235,8 @@ describe('Integration Test: DELETE /api/deck', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -290,8 +290,8 @@ describe('Integration Test: DELETE /api/deck', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -346,8 +346,8 @@ describe('Integration Test: DELETE /api/deck', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 

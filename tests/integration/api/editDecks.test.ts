@@ -72,8 +72,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -115,8 +115,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -157,8 +157,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -200,8 +200,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -243,8 +243,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -286,8 +286,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -333,8 +333,8 @@ describe('Integration Test: POST /api/edit', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
@@ -351,7 +351,7 @@ describe('Integration Test: POST /api/edit', () => {
 
             const newDeck = cloneDeep(res.body[res.body.length - 1]);
             newDeck.title = 'Edited title';
-            newDeck.notes[0] = { _id: newDeck.notes[0]._id, front: 'New front', back: 'Different Back' };
+            newDeck.notes[0] = { _id: newDeck.notes[0]._id, front: 'New front', back: 'Different Back', type: 'basicNote' };
 
             await request(app)
                 .post('/api/decks/edit')

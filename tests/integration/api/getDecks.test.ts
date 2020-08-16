@@ -64,16 +64,16 @@ describe('Integration Test: POST /api/decks', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 
             const deck2 = {
                 title: 'Test Deck2',
                 notes: [
-                    { front: 'Test Front2', back: 'Test Back2' },
-                    { text: 'Cloze Text test2' }
+                    { front: 'Test Front2', back: 'Test Back2', type: 'basicNote' },
+                    { text: 'Cloze Text test2', type: 'clozeNote' }
                 ]
             };
 
@@ -118,8 +118,8 @@ describe('Integration Test: POST /api/decks', () => {
             const deck = {
                 title: 'Test Deck',
                 notes: [
-                    { front: 'Test Front', back: 'Test Back' },
-                    { text: 'Cloze Text test' }
+                    { front: 'Test Front', back: 'Test Back', type: 'basicNote' },
+                    { text: 'Cloze Text test', type: 'clozeNote' }
                 ]
             };
 

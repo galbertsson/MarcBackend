@@ -1,7 +1,7 @@
 const basicNoteSchema = {
     bsonType: 'object',
     additionalProperties: false,
-    required: ['front', 'back'],
+    required: ['front', 'back', 'type'],
     properties: {
         _id: {
             bsonType: 'objectId'
@@ -11,6 +11,9 @@ const basicNoteSchema = {
         },
         back: {
             bsonType: 'string'
+        },
+        type: {
+           enum: ['basicNote']
         }
     }
 };
@@ -25,6 +28,9 @@ const clozeNoteSchema = {
         },
         text: {
             bsonType: 'string'
+        },
+        type: {
+            enum: ['clozeNote']
         }
     }
 };
