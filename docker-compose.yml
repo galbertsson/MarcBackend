@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  reverse:
+    container_name: reverse
+    hostname: reverse
+    image: nginx
+    ports:
+      - 3001:3001
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  mongoDb:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:
