@@ -36,7 +36,6 @@
     "@types/lodash": "^4.14.149",
     "@types/mocha": "^5.2.7",
     "@types/mongodb": "^3.5.5",
-    "@types/mongoose": "^5.7.8",
     "@types/node": "^13.11.0",
     "@types/passport": "^1.0.3",
     "@types/passport-local": "^1.0.33",
