@@ -4,6 +4,8 @@ import session from 'express-session';
 import passport from 'passport';
 import csrf from 'csurf';
 import cors from 'cors';
+import connectRedis from 'connect-redis';
+import redis from 'redis';
 
 import * as apiController from './controller/api';
 import * as authController from './controller/auth';
@@ -34,16 +36,29 @@ if (process.env.ENVIRONMENT === 'DEV') {
 
 initPassport();
 
-app.use(session({
+const sessionOptions: session.SessionOptions = {
     secret: process.env.COOKIE_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
         secure: process.env.ENVIRONMENT !== 'DEV',
         httpOnly: true,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 1 month max age
     },
-}));
+};
+
+if (process.env.REDIS_HOST && process.env.REDIS_PORT) {
+    console.log('Using Redis');
+    const RedisStore = connectRedis(session);
+
+    const redisClient = redis.createClient(parseInt(process.env.REDIS_PORT), process.env.REDIS_HOST);
+    sessionOptions.store = new RedisStore({ client: redisClient });
+} else {
+    console.warn('No Redis ENV detected, session will be lost on restart');
+}
+
+app.use(session(sessionOptions));
 
 app.use(urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -67,11 +82,11 @@ app.post('/logout', authController.logout);
 app.get('/csrf', csrfController.getToken);
 
 export function start() {
-    app.listen(port, err => {
-        if (err) {
-            return console.error(err);
-        }
-        initConnection(process.env.MONGO_URL);
+    app.listen(port, () => {
+        initConnection(process.env.MONGO_URL).catch((err) => {
+            console.error(err);
+            process.exit(129); // Could not connect to DB
+        })
         return console.log(`Server is running on port ${port}`);
     });
 };

@@ -15,6 +15,15 @@ services:
       - 27017:27017
     volumes:
       - mongodb_data_container:/data/db
-
+  server: 
+    build: .
+    ports: 
+      - 8080:8080
+    env_file: 
+      - .env-docker-dev
+  redis: 
+    image: redis:alpine
+    ports: 
+      - 6379:6379
 volumes:
   mongodb_data_container:
